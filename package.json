@@ -1,0 +1,47 @@
+{
+  "name": "hackerio-discord",
+  "version": "0.0.0",
+  "description": "Hacker.io is an online game",
+  "main": "src/index.ts",
+  "engines": {
+    "node": "12.x"
+  },
+  "scripts": {
+    "start": "nodemon --watch 'src/**/*.ts' --ignore 'src/**/*.spec.ts' --exec ts-node src/index.ts",
+    "build": "tsc -p ."
+  },
+  "dependencies": {
+    "dblapi.js": "^2.3.0",
+    "discord.js": "^11.5.1",
+    "dotenv": "^8.0.0",
+    "mongoose": "^5.6.0"
+  },
+  "devDependencies": {
+    "@types/dotenv": "6.1.1",
+    "@types/express": "4.17.0",
+    "@types/mongoose": "^5.3.26",
+    "@types/node": "^11.13.5",
+    "nodemon": "^1.18.4",
+    "ts-node": "^8.3.0",
+    "tslint": "^5.16.0",
+    "typescript": "^3.5.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/isaac-diaby/hackerio-DiscordB.git"
+  },
+  "keywords": [
+    "hackerio",
+    "discord",
+    "bot",
+    "online",
+    "game"
+  ],
+  "private": true,
+  "author": "isaac-diaby <isaac.diaby.code@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/isaac-diaby/hackerio-DiscordB/issues"
+  },
+  "homepage": "https://github.com/isaac-diaby/hackerio-DiscordB#readme"
+}
