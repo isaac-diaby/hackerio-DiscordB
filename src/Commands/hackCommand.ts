@@ -344,15 +344,16 @@ async hackUserResults(won: boolean, CEB: number, listedEffected: Ieffects, enemy
      */
     async hackBankResults(won: boolean, CEB: number, listedEffected: Ieffects, bankDetails: IbankMeta, userData: IUserState) {
         const bankOffering = Math.round(bankDetails.hackPrice * CEB + (bankDetails.hackPrice * (listedEffected.winChanceAlt / 100)))
-        let myFinalMoney: number
-        let myFinalXp: number
+        let myFinalMoney: number = userData.money
+        let myFinalXp: number = userData.level.xp
         if (won) {
-            myFinalMoney = userData.money + bankOffering
+            myFinalMoney += bankOffering
             myFinalXp += bankOffering
         } else {
-            myFinalMoney = userData.money - bankOffering
+            myFinalMoney -= bankOffering
             myFinalXp +=  Math.round(bankOffering/2)
         }
+
         const Msg = new Discord.RichEmbed()
             .setAuthor(`Hacking ${bankDetails.name} Bank`)
             .setTitle(`You ${(won) ? 'Successfully Won' : 'Unfortunately Lost'} The Hack!`)
@@ -418,7 +419,7 @@ async hackUserResults(won: boolean, CEB: number, listedEffected: Ieffects, enemy
  */
     didIwinLuckDraw(WinChance: number) {
         const winningPercentage = Math.floor(Math.random() * 100)
-        console.log(winningPercentage, WinChance)
+        // console.log(winningPercentage, WinChance)
         return winningPercentage <= WinChance
     }
     /**
@@ -433,7 +434,7 @@ async AfterHackProfit(userID: string, money: number,myFinalXp:number, log: Ilog,
         'level.xp': myFinalXp,
         money,
         $push: { log }
-    }).exec()
+    }).exec().catch(e => console.log(e))
 }
 
 
