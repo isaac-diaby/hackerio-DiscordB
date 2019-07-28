@@ -120,12 +120,12 @@ async hackUserResults(won: boolean, CEB: number, listedEffected: Ieffects, enemy
             time: Date.now(),
             des: `You ${(won) ? 'Successfully Won' : 'Unfortunately Lost'} The Hack!`,
             cashDif: (won) ? ememyOffering : 0
-        })
+        }, false)
     await this.AfterHackProfit(
         enemyData.userID,
         enemyFinalMoney,
         enemyData.level.xp,
-        enemylogMsg)
+        enemylogMsg, false)
     await this.msg.author.send(Msg)
 }
 
@@ -369,12 +369,12 @@ async hackUserResults(won: boolean, CEB: number, listedEffected: Ieffects, enemy
                 time: Date.now(),
                 des: `You ${(won) ? 'Successfully Won' : 'Unfortunately Lost'} The Hack!`,
                 cashDif: bankOffering
-            })
+            },!won)
         await this.msg.author.send(Msg)
     }
 
         /**
-     * 
+     * Isaac M Diaby
      * @param enemyLevel 
      * @param myLevel 
      */
@@ -418,7 +418,7 @@ async hackUserResults(won: boolean, CEB: number, listedEffected: Ieffects, enemy
  */
     didIwinLuckDraw(WinChance: number) {
         const winningPercentage = Math.floor(Math.random() * 100)
-        // console.log(winningPercentage)
+        console.log(winningPercentage, WinChance)
         return winningPercentage <= WinChance
     }
     /**
@@ -427,9 +427,9 @@ async hackUserResults(won: boolean, CEB: number, listedEffected: Ieffects, enemy
  * @param money 
  * @param log 
  */
-async AfterHackProfit(userID: string, money: number,myFinalXp:number, log: Ilog) {
+async AfterHackProfit(userID: string, money: number,myFinalXp:number, log: Ilog, isOutcast:boolean) {
     await UserMD.findOneAndUpdate({ userID }, {
-        'playerStat.outcast': (log.type == 'TOOK') ? true: false,
+        'playerStat.outcast': isOutcast,
         'level.xp': myFinalXp,
         money,
         $push: { log }

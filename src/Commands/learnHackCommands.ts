@@ -217,7 +217,6 @@ export class learnCommand extends DiscordCommand {
     const flatten = [...learnCommand.HACKER_SCRIPTS[0],...learnCommand.HACKER_SCRIPTS[1], ...learnCommand.HACKER_SCRIPTS[2]]
     // console.log(flatten)
     const splitBy = 5
-    let size = 0
     let newSplitArray = []
     for(let i=0; i<flatten.length; i+=splitBy){
       newSplitArray.push(flatten.slice(i, i+splitBy))
