@@ -1,7 +1,5 @@
 import * as Discord from 'discord.js';
 import { DiscordCommand } from './DiscordCommand';
-import { GameCommandsOBJ } from '.';
-import { IUserState, UserMD } from '../Models/userState';
 
 export interface IhackingScripts {
   primaryCmd: string,
@@ -150,28 +148,28 @@ export class learnCommand extends DiscordCommand {
   ) {
     super(client, message, cmdArguments);
     let page: number
-    try{
-      page = (this.args[0] !== undefined) ? parseInt(this.args[0],10) : 1
+    try {
+      page = (this.args[0] !== undefined) ? parseInt(this.args[0], 10) : 1
       this.openLearningBook(page)
-    }catch(e) {
+    } catch (e) {
       this.getCommandInfo(this.args[0])
     }
   }
   getCommandInfo(primeCmd: string) {
-    const flatten = [...learnCommand.HACKER_SCRIPTS[0],...learnCommand.HACKER_SCRIPTS[1], ...learnCommand.HACKER_SCRIPTS[2]]
-    const selectedCmd = (flatten.filter(script => script.primaryCmd === primeCmd ))[0]
+    const flatten = [...learnCommand.HACKER_SCRIPTS[0], ...learnCommand.HACKER_SCRIPTS[1], ...learnCommand.HACKER_SCRIPTS[2]]
+    const selectedCmd = (flatten.filter(script => script.primaryCmd === primeCmd))[0]
     if (selectedCmd === undefined) return this.msg.author.send('could not find this command')
     const Msg = new Discord.RichEmbed()
-    .setColor('#3BB2E2')
-    .addField('Command', selectedCmd.primaryCmd, true)
-    .addField('Program', selectedCmd.program, true)
-    .addField('Description', selectedCmd.description, true)
-    .addBlankField(true)
+      .setColor('#3BB2E2')
+      .addField('Command', selectedCmd.primaryCmd, true)
+      .addField('Program', selectedCmd.program, true)
+      .addField('Description', selectedCmd.description, true)
+      .addBlankField(true)
     this.msg.author.send(Msg)
   }
   openLearningBook(page: number) {
-     //@ts-ignore
-     this.msg.author.send(this.GetPage(page)).then((m: Discord.Message) => {
+    //@ts-ignore
+    this.msg.author.send(this.GetPage(page)).then((m: Discord.Message) => {
       m.react('👈').then(mr => {
         m.react('👉')
         const backWordsFilter = (r: Discord.MessageReaction, u: Discord.User) => r.emoji.name === '👈' && u.id === this.msg.author.id
@@ -200,12 +198,12 @@ export class learnCommand extends DiscordCommand {
       .setColor('#3BB2E2')
       .setFooter(`Page ${page} of ${newSplitArray.length}`)
       .setTitle(`Dfficulty: ${page}`);
-      newSplitArray[page - 1].forEach(script => {
-        // console.log(script)
+    newSplitArray[page - 1].forEach(script => {
+      // console.log(script)
       Msg.addField('Command', script.primaryCmd, true)
-      .addField('Program', script.program, true)
-      .addField('Description', script.description, true)
-      .addBlankField()
+        .addField('Program', script.program, true)
+        .addField('Description', script.description, true)
+        .addBlankField()
 
     });
     return Msg
@@ -214,13 +212,13 @@ export class learnCommand extends DiscordCommand {
    * Getting the commands in a format that can be printed out with less than 25 discord fields
    */
   joinAllLearningCommandAndSmaller() {
-    const flatten = [...learnCommand.HACKER_SCRIPTS[0],...learnCommand.HACKER_SCRIPTS[1], ...learnCommand.HACKER_SCRIPTS[2]]
+    const flatten = [...learnCommand.HACKER_SCRIPTS[0], ...learnCommand.HACKER_SCRIPTS[1], ...learnCommand.HACKER_SCRIPTS[2]]
     // console.log(flatten)
     const splitBy = 5
     let newSplitArray = []
-    for(let i=0; i<flatten.length; i+=splitBy){
-      newSplitArray.push(flatten.slice(i, i+splitBy))
+    for (let i = 0; i < flatten.length; i += splitBy) {
+      newSplitArray.push(flatten.slice(i, i + splitBy))
     }
     return newSplitArray
-  } 
+  }
 }

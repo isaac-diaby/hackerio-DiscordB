@@ -1,6 +1,5 @@
 import * as Discord from 'discord.js';
 import { DiscordCommand } from './DiscordCommand';
-import { GameCommandsOBJ } from '.';
 import { IUserState, UserMD } from '../Models/userState';
 
 export interface IbankMeta {
