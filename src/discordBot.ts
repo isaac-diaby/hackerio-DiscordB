@@ -189,7 +189,8 @@ export class DiscordBotRun {
                        [`1. You execute commands with the following prefix: ${process.env.BOT_PREFIX}`,
                         `2. Execute ${process.env.BOT_PREFIX}help - this is all the in-game commands`,
                         `3. Execute ${process.env.BOT_PREFIX}stat - this shows information about you! (don\'t share your Ip cuz you can't change it (until v3.0)!`,
-                        '4. EXPLORE THE ENDLESS HACKING AND BETTING GAMES'
+                        `4. Execute ${process.env.BOT_PREFIX}learn - get to know some of the commands that will help you get a better chance in your hacks. (very userful!)`,
+                        '5. EXPLORE THE ENDLESS HACKING AND BETTING GAMES'
                     ]
                     )
                     .setFooter(
