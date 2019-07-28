@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
 import { DiscordCommand } from './DiscordCommand';
-import { GameCommandsOBJ } from '.';
+import { GameCommandsOBJ, CommandObj } from '.';
 
 export class HelpCommand extends DiscordCommand {
 
@@ -11,32 +11,87 @@ export class HelpCommand extends DiscordCommand {
   ) {
     super(client, message, cmdArguments);
 
-    const helpMessage = new Discord.RichEmbed()
-    .setColor('#D3D3D3')
-    .setTitle('Help Command');
     if (this.args[0] !== undefined) {
-        const commandMeta = GameCommandsOBJ[this.args[0]];
-        if (commandMeta) {
-          helpMessage
-            .addField('Primary', this.args[0], true)
-            .addField('Description', commandMeta.description!, true);
-            if (commandMeta.args) helpMessage.addField('Arguments', commandMeta.args!, true)
-        }
+      this.getACommandInfo()
       } else {
-        for (const command in GameCommandsOBJ) {
-          const commandMeta = GameCommandsOBJ[command];
-          helpMessage
-          .addField('Primary', command, true)
-          .addField('Description', commandMeta.description!,true)
-          commandMeta.args ? helpMessage.addField('Arguments', commandMeta.args!, true) :
-          helpMessage.addBlankField(true)
-          helpMessage.addBlankField()
-        }
+        this.getHelpAll(GameCommandsOBJ)
       }
-      this.msg.author
-        .send(helpMessage)
-        // @ts-ignore
-        .then((messageSent: Discord.Message) => messageSent.delete(30000));
     }
+    getACommandInfo() {
+      const helpMessage = new Discord.RichEmbed()
+      .setColor('#D3D3D3')
+      .setTitle('Help Command');
+      const commandMeta = GameCommandsOBJ[this.args[0]];
+      if (commandMeta) {
+        helpMessage
+          .addField('Primary', this.args[0], true)
+          .addField('Description', commandMeta.description!, true);
+          if (commandMeta.args) helpMessage.addField('Arguments', commandMeta.args!, true)
+        }else {
+          helpMessage.setDescription('Couldn\'t find that command')
+        }
+        // @ts-ignore
+        this.msg.author.send(helpMessage).then((m: Discord.Message) =>  m.delete(60000))
+    }
+getHelpAll(GameCommandsOBJ: {[key: string]: CommandObj}) {
+  let page = 1
+  // @ts-ignore
+  this.msg.author.send(this.GetHelpPage(page, GameCommandsOBJ)).then((m: Discord.Message) => {
+    m.delete(60000)
+    m.react('👈').then(mr => {
+      m.react('👉')
+      const backWordsFilter = (r: Discord.MessageReaction, u: Discord.User) => r.emoji.name === '👈' && u.id === this.msg.author.id
+      const forWordsFilter = (r: Discord.MessageReaction, u: Discord.User) => r.emoji.name === '👉' && u.id === this.msg.author.id
+
+      const backWords = m.createReactionCollector(backWordsFilter, { time: 60000 })
+      const forWords = m.createReactionCollector(forWordsFilter, { time: 60000 })
+
+      backWords.on('collect', r => {
+        if (page === 1) return
+        page--
+        m.edit(this.GetHelpPage(page, GameCommandsOBJ))
+      })
+      forWords.on('collect', r => {
+        if (page === this.splitHelp(GameCommandsOBJ).length) return
+        page++
+        m.edit(this.GetHelpPage(page, GameCommandsOBJ))
+      })
+    })
+  })
+}
+splitHelp(commands:{[key: string]: CommandObj}) {
+  const splitBy = 5
+  var toArray = Object.keys(commands).map(function(key) {
+    return [Number(key), commands[key]];
+  });
+
+  let newSplitArray = []
+  for(let i=0; i < toArray.length; i+=splitBy){
+    newSplitArray.push(toArray.slice(i, i+splitBy))
+  } 
+  // console.log(newSplitArray)
+  return newSplitArray
+}
+GetHelpPage(page: number, commands:{[key: string]: CommandObj} ) {
+  const newSplitArrayFull = this.splitHelp(commands)
+  const newSplitArraySelected = this.splitHelp(commands)[page-1]
+  // console.log(newSplitArraySelected)
+  const Msg = new Discord.RichEmbed()
+    .setTitle('My Logs')
+    .setFooter(`Page ${page} of ${newSplitArrayFull.length}`)
+  let logIndex = (page-1 != 0) ? ((page-1)*5) : 0
+  newSplitArraySelected.forEach(command => {
+    Msg
+    .addField('Primary', command[0], true)
+    // @ts-ignore
+    .addField('Description', command[1].description!,true)
+    // @ts-ignore
+    command[1].args ? Msg.addField('Arguments', command[1].args!, true) :
+    Msg.addBlankField(true)
+    Msg.addBlankField()
+    ++logIndex
+  });
+  return Msg
+}
 
   }
