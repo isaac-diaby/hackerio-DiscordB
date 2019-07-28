@@ -80,7 +80,7 @@ export interface IUserState {
     joinedDate: Date;
   };
 }
-interface IUserStateDoc extends Document, IUserState {}
+export interface IUserStateDoc extends Document, IUserState {}
 
 // all instances will have acces to this when doing UserMD.findOne().byUserID('usersID')
 userSchema.statics.byUserID = function(userID: string, cb: void) {

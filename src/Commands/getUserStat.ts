@@ -23,7 +23,7 @@ export class UserStatsCommand extends DiscordCommand {
                 .setAuthor(`My IP: ${userData.ip}  (Dont share this with anyone!)`)
                 .setTitle('User statistics')
                 .addField('Level',`${userData.level.current}`, true)
-                .addField('Xp',`${userData.level.xp}/${currentLevelData[0].xp}`, true)
+                .addField('Xp',`${userData.level.xp}/${currentLevelData[0].xp} ${(userData.level.xp>= currentLevelData[0].xp) ? `run ${process.env.BOT_PREFIX}levelup`: ''}`, true)
                 .addField('Crypo',`${userData.money}`)
                 .addField('Elite',`${userData.playerStat.elite}`, true)
                 .addField('Outcast',`${userData.playerStat.outcast}`, true)

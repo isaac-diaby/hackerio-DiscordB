@@ -26,7 +26,7 @@ export class DiscordBotRun {
         var xp = 0
             for (let level = 1; level <= 199; level++)
         {
-          xp += Math.floor(level + 3 * Math.pow(2, level / 7.));
+          xp += Math.floor(level + 150 * Math.pow(1.4, level / 7.));
           yield {level, xp}
         }
         yield {level: 200, xp: 'MAX'}
@@ -40,7 +40,7 @@ export class DiscordBotRun {
             this.botClient.user.setActivity('Hackers | ~>help', { type: "WATCHING" });
             console.log(`${this.botClient.user.username} is online`);
             this.botOnlineListen();
-            // console.log(this.LevelSystemXp)
+            // console.log(DiscordBotRun.LevelSystemXp)
         });
     }
 
@@ -72,6 +72,7 @@ export class DiscordBotRun {
                         return
                     }
                     if (!userData.online) this.setUserToOnline({ userID: receivedMessage.author.id, status: true })
+                    if (userData.inHack.isInHack) return
                     // checks if the user still active every 10 minutes
                     if (!this.CURRENTLY_ONLINE.has(receivedMessage.author.id)) {
                         this.CURRENTLY_ONLINE.add(receivedMessage.author.id)
@@ -81,20 +82,26 @@ export class DiscordBotRun {
                                 this.CURRENTLY_ONLINE.delete(receivedMessage.author.id)
                                 clearInterval(StatusUpdate);
                             }
-                            this.checkIfUserLeveledUp(userData)
+                            this.checkIfUserLeveledUp(userData,receivedMessage)
                         }, 
                         600000
                         )
                     }
+                  
+
 
                     // Parse the text to a command format 
                     let commands = receivedMessage.content
                         .toLowerCase()
                         .substr(process.env.BOT_PREFIX.length)
+                        .trim()
                         .split(' ');
                     let primaryCmd = commands[0];
                     let argsCmd = commands.slice(1);
-
+                    if (primaryCmd == 'levelup') {
+                        this.checkIfUserLeveledUp(userData,receivedMessage)
+                        return 
+                    }
                     // try execute the command
                     let gameCommandClass = GameCommandsOBJ[primaryCmd];
                     if (!gameCommandClass) {
@@ -125,7 +132,7 @@ export class DiscordBotRun {
     getChannelType(message: Discord.Message) {
         return message.channel.type
     }
-    async checkIfUserLeveledUp(userData: IUserState) {
+    async checkIfUserLeveledUp(userData: IUserState, msg:Discord.Message) {
         await UserMD.findOne({ userID: userData.userID }).then(
             async (userData: IUserState) => {
                 const currentLevelData = [...DiscordBotRun.LevelSystemXp].filter(stage => stage.level == userData.level.current) 
@@ -140,6 +147,7 @@ export class DiscordBotRun {
                                 current: newLevel
                             }
                         }).exec()
+                        await msg.author.send(`🎉👏 Congrate you are now level ${++userData.level.current} 🎉`)
             
                     }
                 }
@@ -165,12 +173,24 @@ export class DiscordBotRun {
                     .setAuthor(`${userDiscordInfo.tag}`)
                     .setTitle('New Profile Created!')
                     .setDescription(
-                        'I see that this is your first time type ~>help'
+                        `Welcome, I see that this is your first time. Type ${process.env.BOT_PREFIX}help FOR HELP and good luck on your adventure. (Discord DM based game)`
                     )
                     // .addField('discordbots.org', '')
                     .addField(
                         'Join The Official Serverr',
                         'http://bit.ly/CGBofficialServer'
+                    )
+                    .addField(
+                        'README: DISCLAIMER:',
+                        'HackerIO is an online educational game, IS JUST A GAME. No real hacking or tips should be shared or be used in the game. DONT SHARE IP (you will be foolish to!)'
+                    )
+                    .addField(
+                        'New Players',
+                       [`1. You execute commands with the following prefix: ${process.env.BOT_PREFIX}`,
+                        `2. Execute ${process.env.BOT_PREFIX}help - this is all the in-game commands`,
+                        `3. Execute ${process.env.BOT_PREFIX}stat - this shows information about you! (don\'t share your Ip cuz you can't change it (until v3.0)!`,
+                        '4. EXPLORE THE ENDLESS HACKING AND BETTING GAMES'
+                    ]
                     )
                     .setFooter(
                         'For more features and exclusive bonuses become a Donater!: http://bit.ly/CGBdonate'
