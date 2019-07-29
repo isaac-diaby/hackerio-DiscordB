@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
 import { GameCommandsOBJ } from './Commands';
-import { UserMD, IUserState } from './Models/userState';
+import { UserMD, IUserState, uuidv4 } from './Models/userState';
 import { EliteCommand } from './Commands/eliteCommand';
 
 
@@ -164,7 +164,8 @@ export class DiscordBotRun {
     ) {
 
         const newUser = new UserMD({
-            userID: userDiscordInfo.id
+            userID: userDiscordInfo.id,
+            ip:  uuidv4()
         });
         newUser
             .save()
