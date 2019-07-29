@@ -211,7 +211,7 @@ export class DiscordBotRun {
                         `There was an error creating ${userDiscordInfo} account on the server`
                     );
                 discordChannel.send(FailedNewUserMSG);
-                discordChannel.send(e)
+                // discordChannel.send(e)
             })
     }
     checkIfStillElite(user: Discord.User) {
