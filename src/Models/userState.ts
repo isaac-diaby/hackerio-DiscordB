@@ -52,7 +52,7 @@ const userSchema = new Schema({
 });
 
 export interface Ilog {
-    type: 'HACKED' | 'SCAN' | 'GAVE' | 'ERROR' | 'TOOK' | 'LOST';
+    type: 'HACKED' | 'SCAN' | 'GAVE' | 'ERROR' | 'TOOK' | 'LOST' | 'DEFENDED';
     time: Date | number;
     cashDif: number;
     des: string;

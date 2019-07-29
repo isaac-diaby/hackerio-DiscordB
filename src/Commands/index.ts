@@ -4,8 +4,9 @@ import { UserStatsCommand } from "./getUserStat";
 import { BanksCommand } from "./banksCommand";
 import { HackCommand } from "./hackCommand";
 import { LogCommand } from "./logCommand";
-import { learnCommand } from "./learnHackCommands";
+import { LearnCommand } from "./learnHackCommands";
 import { OutCastCommand } from "./outcastCommand";
+import { EliteCommand } from "./eliteCommand";
 
 export interface CommandObj {
     execute: any;
@@ -34,7 +35,7 @@ export const GameCommandsOBJ: { [key: string]: CommandObj } = {
         args: ['mode = -b | -u', '-b <bank> = city | nation | government | pentagon | illuminati', '-u <ip> = ip | ( -r = random ) ']
     },
     'learn': {
-        execute: learnCommand,
+        execute: LearnCommand,
         description: 'Read and Learn to become a better hacker. 😁 Did you think it was was going to be easy?',
         args: ['<page> = valid age number']
     },
@@ -45,7 +46,12 @@ export const GameCommandsOBJ: { [key: string]: CommandObj } = {
     },
     'outcast': {
         execute: OutCastCommand,
-        description: 'out cast players (OCP) disadvantages and how to get off the list ',
+        description: 'Out cast players (OCP) disadvantages and how to get off the list ',
         args: ['<mode> = (-p = pay to get off the list)']
+    },
+    'elite': {
+        execute: EliteCommand,
+        description: 'Elite players (EP) advantages and how to get in the list⭐',
+        args: ['<mode> = (-j = steps to get become an elite)']
     },
 }

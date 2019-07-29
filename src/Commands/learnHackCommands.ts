@@ -7,7 +7,7 @@ export interface IhackingScripts {
   program: 'Metasploitable'
 }
 
-export class learnCommand extends DiscordCommand {
+export class LearnCommand extends DiscordCommand {
   // https://null-byte.wonderhowto.com/how-to/hack-like-pro-ultimate-command-cheat-sheet-for-metasploits-meterpreter-0149146/
   // https://null-byte.wonderhowto.com/how-to/hack-like-pro-ultimate-list-hacking-scripts-for-metasploits-meterpreter-0149339/
   static HACKER_SCRIPTS: Array<IhackingScripts[]> = [[
@@ -156,7 +156,7 @@ export class learnCommand extends DiscordCommand {
     }
   }
   getCommandInfo(primeCmd: string) {
-    const flatten = [...learnCommand.HACKER_SCRIPTS[0], ...learnCommand.HACKER_SCRIPTS[1], ...learnCommand.HACKER_SCRIPTS[2]]
+    const flatten = [...LearnCommand.HACKER_SCRIPTS[0], ...LearnCommand.HACKER_SCRIPTS[1], ...LearnCommand.HACKER_SCRIPTS[2]]
     const selectedCmd = (flatten.filter(script => script.primaryCmd === primeCmd))[0]
     if (selectedCmd === undefined) return this.msg.author.send('could not find this command')
     const Msg = new Discord.RichEmbed()
@@ -212,7 +212,7 @@ export class learnCommand extends DiscordCommand {
    * Getting the commands in a format that can be printed out with less than 25 discord fields
    */
   joinAllLearningCommandAndSmaller() {
-    const flatten = [...learnCommand.HACKER_SCRIPTS[0], ...learnCommand.HACKER_SCRIPTS[1], ...learnCommand.HACKER_SCRIPTS[2]]
+    const flatten = [...LearnCommand.HACKER_SCRIPTS[0], ...LearnCommand.HACKER_SCRIPTS[1], ...LearnCommand.HACKER_SCRIPTS[2]]
     // console.log(flatten)
     const splitBy = 5
     let newSplitArray = []

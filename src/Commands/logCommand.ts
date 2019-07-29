@@ -37,8 +37,9 @@ export class LogCommand extends DiscordCommand {
     try {
       if (this.args[1] !== undefined) selectedLog = this.args[1]
       const selectedLogData = userDataLog[parseInt(selectedLog, 10)]
-
+const goodActions: Array<string> = ['GAVE', 'TOOK', 'DEFENDED']
       const Msg = new Discord.RichEmbed()
+      .setColor(goodActions.includes(selectedLogData.type) ? '#60BE82': '#F44336')
         .setTitle('My Logs')
         .addField('TYPE', selectedLogData.type, true)
         .addField('DESCRIPTION', selectedLogData.des, true)

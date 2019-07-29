@@ -39,7 +39,8 @@ export class OutCastCommand extends DiscordCommand {
     }
 
     async outcastPay(userData: IUserState) {
-        const cost: number = userData.level.current * 1000
+        let  cost: number = (userData.level.current * 1000)
+        if (userData.playerStat.elite) cost = Math.round(cost*0.8)
         if (userData.money < cost) return this.msg.author.send(`You need at least ${cost} crypo's in your account to buy out the Out Cast list🙄`)
         if (!(await this.outcastPayConfirmationStage(cost, userData))) return
 

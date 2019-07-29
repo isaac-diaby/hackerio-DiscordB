@@ -1,6 +1,7 @@
 import * as Discord from 'discord.js';
 import { GameCommandsOBJ } from './Commands';
 import { UserMD, IUserState } from './Models/userState';
+import { EliteCommand } from './Commands/eliteCommand';
 
 
 
@@ -83,6 +84,7 @@ export class DiscordBotRun {
                                 clearInterval(StatusUpdate);
                             }
                             this.checkIfUserLeveledUp(userData,receivedMessage)
+                            this.checkIfStillElite(receivedMessage.author)
                         }, 
                         600000
                         )
@@ -210,5 +212,12 @@ export class DiscordBotRun {
                 discordChannel.send(FailedNewUserMSG);
                 console.log(e);
             })
+    }
+    checkIfStillElite(user: Discord.User) {
+        const isUserInOfficialServer = this.botClient.guilds.get('566982444822036500').members.get(user.id)
+        if (isUserInOfficialServer !== undefined) {
+            // HackerIO Elite == 605180133535645745
+            if (isUserInOfficialServer.roles.has('605180133535645745')) return EliteCommand.altEliteStatus(user.id, false, user)
+        }
     }
 }

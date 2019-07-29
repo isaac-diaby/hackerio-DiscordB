@@ -3,7 +3,7 @@ import { DiscordCommand } from './DiscordCommand';
 import { GameCommandsOBJ } from '.';
 import { IUserState, UserMD, Ilog } from '../Models/userState';
 import { BanksCommand, IbankMeta } from './banksCommand';
-import { learnCommand } from './learnHackCommands';
+import { LearnCommand } from './learnHackCommands';
 
 export interface Ieffects {
     winChanceAlt: number
@@ -78,9 +78,9 @@ export class HackCommand extends DiscordCommand {
         let myFinalXp: number = userData.level.current
         let enemyFinalMoney: number = enemyData.money
         let enemylogMsg: Ilog = {
-            type: 'HACKED',
+            type: (!won) ? 'DEFENDED' : 'HACKED',
             time: Date.now(),
-            des: `You ${(!won) ? 'Successfully Won' : 'Unfortunately Lost'} The Defence! ${(!won) ? 'Atackers IP: ' + userData.ip : ''} `,
+            des: `You ${(!won) ? 'Successfully Won' : 'Unfortunately Lost'} The Defence! ${(!won) ? 'Atackers IP: ' + userData.ip : 'Someone hacked you'} `,
             cashDif: 0
         }
         let XpGained
@@ -99,6 +99,8 @@ export class HackCommand extends DiscordCommand {
             enemyFinalMoney -= ememyOffering
             myFinalXp += ememyOffering
             enemylogMsg.cashDif = ememyOffering
+
+            // TODO add custume messages to enemy logs here
         } else {
             XpGained = Math.round((ememyOffering * (userData.level.current / enemyData.level.current)) * 0.1)
             myFinalXp += XpGained
@@ -368,7 +370,7 @@ export class HackCommand extends DiscordCommand {
             {
                 type: won ? 'TOOK' : 'LOST',
                 time: Date.now(),
-                des: `You ${(won) ? 'Successfully Won' : 'Unfortunately Lost'} The Hack!`,
+                des: `You ${(won) ? 'Successfully Won' : 'Unfortunately Lost'} The Hack against: ${bankDetails.name} Bank `,
                 cashDif: bankOffering
             }, !won)
         await this.msg.author.send(Msg)
@@ -394,19 +396,19 @@ export class HackCommand extends DiscordCommand {
         let questionMsg: Discord.Message = await this.msg.author.send('Starting Hacking Session') as Discord.Message
         for (let i = 1; i <= rounds; i++) {
             const randomDifficulty = Math.floor(Math.random() * difficulty)
-            const randomQuestionIndex = Math.floor(Math.random() * learnCommand.HACKER_SCRIPTS[randomDifficulty].length)
+            const randomQuestionIndex = Math.floor(Math.random() * LearnCommand.HACKER_SCRIPTS[randomDifficulty].length)
             const Msg = new Discord.RichEmbed()
                 .setColor('#551A8B')
                 .setTitle(`Commands left ${i}/${rounds}`)
                 .setDescription('Type the command that does the following.')
                 .addField('Correct', CorrentAnswers)
-                .addField('What Command Does this:', learnCommand.HACKER_SCRIPTS[randomDifficulty][randomQuestionIndex].description)
+                .addField('What Command Does this:', LearnCommand.HACKER_SCRIPTS[randomDifficulty][randomQuestionIndex].description)
                 .setFooter('If You dont know the answer just send an guest to skip')
             await questionMsg.edit(Msg)
             await questionMsg.channel.awaitMessages(
                 (m: Discord.Message) => m.author.id == this.msg.author.id, //m.content == HackCommand.HACKER_SCRIPTS[randomDifficulty][randomQuestionIndex].primaryCmd && 
                 { max: 1, time: 15000 }
-            ).then(c => CorrentAnswers += (c.first().content == learnCommand.HACKER_SCRIPTS[randomDifficulty][randomQuestionIndex].primaryCmd) ? 1 : 0)
+            ).then(c => CorrentAnswers += (c.first().content == LearnCommand.HACKER_SCRIPTS[randomDifficulty][randomQuestionIndex].primaryCmd) ? 1 : 0)
                 .catch(c => { })
         }
         const percentage = Math.round((CorrentAnswers / rounds) * 100) / 100
