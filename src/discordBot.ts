@@ -218,7 +218,7 @@ export class DiscordBotRun {
         const isUserInOfficialServer = this.botClient.guilds.get('566982444822036500').members.get(user.id)
         if (isUserInOfficialServer !== undefined) {
             // HackerIO Elite == 605180133535645745
-            if (isUserInOfficialServer.roles.has('605180133535645745')) return EliteCommand.altEliteStatus(user.id, false, user)
+            if (!isUserInOfficialServer.roles.has('605180133535645745')) return EliteCommand.altEliteStatus(user.id, false, user)
         }
     }
 }
