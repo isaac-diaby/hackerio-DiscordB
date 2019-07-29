@@ -39,7 +39,11 @@ export class HackCommand extends DiscordCommand {
         let selectedIp: string
         if (this.args[1]) selectedIp = this.args[1]
         // gets a random user to hack
-        if (selectedIp == '-r' || selectedIp == 'random') selectedIp = (await this.getRandomOfflineUserData()).ip
+        if (selectedIp == '-r' || selectedIp == 'random'){
+            const randomUser = await this.getRandomOfflineUserData()
+            if (randomUser == null) return this.msg.author.send(new Discord.RichEmbed().setColor('#F44336').setTitle('Couldn\'t Find A Random Player.').addField('Solution: Get More people to Register', 'http://bit.ly/HIOinvite'))
+            selectedIp = randomUser.ip
+        }
 
         const enemyData = await this.doUserCheckViaIp(selectedIp)
 
@@ -75,7 +79,7 @@ export class HackCommand extends DiscordCommand {
     async hackUserResults(won: boolean, CEB: number, listedEffected: Ieffects, enemyData: IUserState, userData: IUserState) {
         const Msg = new Discord.RichEmbed()
         let myFinalMoney: number = userData.money
-        let myFinalXp: number = userData.level.current
+        let myFinalXp: number = userData.level.xp
         let enemyFinalMoney: number = enemyData.money
         let enemylogMsg: Ilog = {
             type: (!won) ? 'DEFENDED' : 'HACKED',
@@ -402,6 +406,7 @@ export class HackCommand extends DiscordCommand {
                 .setTitle(`Commands left ${i}/${rounds}`)
                 .setDescription('Type the command that does the following.')
                 .addField('Correct', CorrentAnswers)
+                .addField('Program Platform', LearnCommand.HACKER_SCRIPTS[randomDifficulty][randomQuestionIndex].program)
                 .addField('What Command Does this:', LearnCommand.HACKER_SCRIPTS[randomDifficulty][randomQuestionIndex].description)
                 .setFooter('If You dont know the answer just send an guest to skip')
             await questionMsg.edit(Msg)

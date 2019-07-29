@@ -62,7 +62,7 @@ getHelpAll(GameCommandsOBJ: {[key: string]: CommandObj}) {
 splitHelp(commands:{[key: string]: CommandObj}) {
   const splitBy = 5
   var toArray = Object.keys(commands).map(function(key) {
-    return [Number(key), commands[key]];
+    return [key, commands[key]];
   });
 
   let newSplitArray = []
@@ -77,10 +77,11 @@ GetHelpPage(page: number, commands:{[key: string]: CommandObj} ) {
   const newSplitArraySelected = this.splitHelp(commands)[page-1]
   // console.log(newSplitArraySelected)
   const Msg = new Discord.RichEmbed()
-    .setTitle('My Logs')
+    .setTitle('Help Commands')
     .setFooter(`Page ${page} of ${newSplitArrayFull.length}`)
   let logIndex = (page-1 != 0) ? ((page-1)*5) : 0
   newSplitArraySelected.forEach(command => {
+    // console.log(command)
     Msg
     .addField('Primary', command[0], true)
     // @ts-ignore

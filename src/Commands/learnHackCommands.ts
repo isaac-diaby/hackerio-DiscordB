@@ -196,8 +196,8 @@ export class LearnCommand extends DiscordCommand {
     // console.log(newSplitArray)
     const Msg = new Discord.RichEmbed()
       .setColor('#3BB2E2')
-      .setFooter(`Page ${page} of ${newSplitArray.length}`)
-      .setTitle(`Dfficulty: ${page}`);
+      .setTitle(`Commands Dictionary`)
+      .setFooter(`Page ${page} of ${newSplitArray.length}`);
     newSplitArray[page - 1].forEach(script => {
       // console.log(script)
       Msg.addField('Command', script.primaryCmd, true)
