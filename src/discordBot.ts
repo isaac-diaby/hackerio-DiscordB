@@ -177,7 +177,7 @@ export class DiscordBotRun {
                     .setDescription(
                         `Welcome, I see that this is your first time. Type ${process.env.BOT_PREFIX}help FOR HELP and good luck on your adventure. (Discord DM based game)`
                     )
-                    // .addField('discordbots.org', '')
+                    .addField('discordbots.org', 'http://bit.ly/HIOdiscordBots')
                     .addField(
                         'Join The Official Serverr',
                         'http://bit.ly/CGBofficialServer'
