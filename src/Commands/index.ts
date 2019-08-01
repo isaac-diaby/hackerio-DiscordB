@@ -12,6 +12,7 @@ export interface CommandObj {
     execute: any;
     description: string;
     args?: Array<string>;
+    eg?: Array<string>;
 }
 
 export const GameCommandsOBJ: { [key: string]: CommandObj } = {
@@ -37,7 +38,7 @@ export const GameCommandsOBJ: { [key: string]: CommandObj } = {
     'learn': {
         execute: LearnCommand,
         description: 'Read and Learn to become a better hacker. 😁 Did you think it was was going to be easy?',
-        args: ['<page> = valid age number']
+        args: ['<page | command> = valid page number or a script command']
     },
     'banks': {
         execute: BanksCommand,
