@@ -3,9 +3,6 @@
   "version": "0.0.0",
   "description": "Hacker.io is an online game",
   "main": "src/index.ts",
-  "engines": {
-    "node": "12.x"
-  },
   "scripts": {
     "start": "nodemon --watch 'src/**/*.ts' --ignore 'src/**/*.spec.ts' --exec ts-node src/index.ts",
     "build": "tsc -p ."
@@ -30,13 +27,7 @@
     "type": "git",
     "url": "git+ssh://git@github.com/isaac-diaby/hackerio-DiscordB.git"
   },
-  "keywords": [
-    "hackerio",
-    "discord",
-    "bot",
-    "online",
-    "game"
-  ],
+  "keywords": ["hackerio", "discord", "bot", "online", "game"],
   "private": true,
   "author": "isaac-diaby <isaac.diaby.code@gmail.com>",
   "license": "ISC",
