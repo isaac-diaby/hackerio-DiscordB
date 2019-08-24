@@ -61,7 +61,7 @@ export class DiscordBotRun {
         receivedMessage.author.presence.status === "idle" ||
         receivedMessage.author.presence.status === "offline"
       ) {
-        receivedMessage.author.send(
+        receivedMessage.channel.send(
           new Discord.RichEmbed()
             .setDescription(
               "Set your discord appearance to 'Online' or 'Do Not Disturb' in order to play the game"
