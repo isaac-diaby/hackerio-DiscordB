@@ -15,14 +15,13 @@ export abstract class DiscordCommand {
     this.args = cmdArguments;
   }
   async sendMsgViaDm(message: Discord.RichEmbed | string) {
-    return this.msg.author
-      .send(message)
-      .catch(e =>
-        this.msg.channel.send(
-          new Discord.RichEmbed().setDescription(
-            "📌 Please make sure you have 'Direct Message' enabled"
-          )
+    return this.msg.author.send(message).catch(e => {
+      this.msg.channel.send(
+        new Discord.RichEmbed().setDescription(
+          "📌 Please make sure you have 'Direct Message' enabled"
         )
       );
+      return undefined;
+    });
   }
 }
