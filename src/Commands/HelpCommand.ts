@@ -103,7 +103,12 @@ export class HelpCommand extends DiscordCommand {
         .addField("Description", command[1].description!, true);
       // @ts-ignore
       command[1].args
-        ? Msg.addField("Arguments", command[1].args!, true)
+        ? Msg.addField(
+            "Arguments",
+            // @ts-ignore
+            command[1].args!,
+            true
+          )
         : Msg.addBlankField(true);
       Msg.addBlankField();
       ++logIndex;
