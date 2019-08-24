@@ -61,7 +61,7 @@ export class LogCommand extends DiscordCommand {
   async deleteLog(userDataLog: [Ilog], userID: string) {
     let selectedLog: string;
     if (this.args[1] !== undefined) selectedLog = this.args[1];
-    if (selectedLog == "all")
+    if (selectedLog === "all")
       return await UserMD.findOneAndUpdate(
         { userID },
         {
@@ -69,7 +69,7 @@ export class LogCommand extends DiscordCommand {
         }
       ).then(s => this.sendMsgViaDm("👀 Deleted All Logs"));
 
-    if (userDataLog[parseInt(selectedLog, 10)] == undefined)
+    if (userDataLog[parseInt(selectedLog, 10)] === undefined)
       return await this.sendMsgViaDm("😶 Could not find a log with that id");
     await UserMD.findOneAndUpdate(
       { userID },
@@ -81,9 +81,9 @@ export class LogCommand extends DiscordCommand {
 
   myLogBrief(userDataLog: [Ilog], page: number) {
     //@ts-ignore
-    if (userDataLog.length == 0) return this.sendMsgViaDm("Your Log Is Empty");
-    //@ts-ignore
+    if (userDataLog.length === 0) return this.sendMsgViaDm("Your Log Is Empty");
     this.sendMsgViaDm(this.GetLogPage(page, userDataLog)).then(
+      //@ts-ignore
       (m: Discord.Message) => {
         m.react("👈").then(mr => {
           m.react("👉");
@@ -134,7 +134,7 @@ export class LogCommand extends DiscordCommand {
     const Msg = new Discord.RichEmbed()
       .setTitle("My Logs")
       .setFooter(`Page ${page} of ${newSplitArrayFull.length}`);
-    let logIndex = page - 1 != 0 ? (page - 1) * 5 : 0;
+    let logIndex = page - 1 !== 0 ? (page - 1) * 5 : 0;
     newSplitArraySelected.forEach(log => {
       Msg.addField(`${logIndex}. TYPE`, log.type, true)
         .addField("DESCRIPTION", log.des.substr(0, 17), true)

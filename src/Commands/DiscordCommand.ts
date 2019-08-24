@@ -15,7 +15,7 @@ export abstract class DiscordCommand {
     this.args = cmdArguments;
   }
   async sendMsgViaDm(message: Discord.RichEmbed | string) {
-    return await this.msg.author
+    return this.msg.author
       .send(message)
       .catch(e =>
         this.msg.channel.send(

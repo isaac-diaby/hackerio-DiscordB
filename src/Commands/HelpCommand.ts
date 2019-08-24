@@ -37,8 +37,9 @@ export class HelpCommand extends DiscordCommand {
   }
   getHelpAll(GameCommandsOBJ: { [key: string]: CommandObj }) {
     let page = 1;
-    // @ts-ignore
+
     this.sendMsgViaDm(this.GetHelpPage(page, GameCommandsOBJ)).then(
+      //@ts-ignore
       (m: Discord.Message) => {
         m.delete(60000);
         m.react("👈").then(mr => {
@@ -93,7 +94,8 @@ export class HelpCommand extends DiscordCommand {
     const Msg = new Discord.RichEmbed()
       .setTitle("Help Commands")
       .setFooter(`Page ${page} of ${newSplitArrayFull.length}`);
-    let logIndex = page - 1 != 0 ? (page - 1) * 5 : 0;
+
+    let logIndex = page - 1 !== 0 ? (page - 1) * 5 : 0;
     newSplitArraySelected.forEach(command => {
       // console.log(command)
       Msg.addField("Primary", command[0], true)

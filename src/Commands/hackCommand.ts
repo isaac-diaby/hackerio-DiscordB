@@ -285,9 +285,9 @@ export class HackCommand extends DiscordCommand {
         ...(availableBanksOnly.length > 0
           ? availableBanksOnly.map(banks => banks.name)
           : "")
-      ].includes(selectedBankName) == false
+      ].includes(selectedBankName) === false
     ) {
-      if (availableBanksOnly.length == 0) {
+      if (availableBanksOnly.length === 0) {
         selectedBankName = "quit";
       } else {
         let Msg = new Discord.RichEmbed()
@@ -316,7 +316,7 @@ export class HackCommand extends DiscordCommand {
             (m: Discord.Message) =>
               ["quit", ...availableBanksOnly.map(banks => banks.name)].includes(
                 m.content
-              ) || m.author.id == this.msg.author.id,
+              ) || m.author.id === this.msg.author.id,
             { max: 1, time: 15000 }
           )
           .then(c => (selectedBankName = c.first().content))
@@ -332,7 +332,7 @@ export class HackCommand extends DiscordCommand {
     }
     // user Selected a bank
     const selectedBank: IbankMeta[] = BanksCommand.BANKS_META.filter(
-      bank => bank.name == selectedBankName
+      bank => bank.name === selectedBankName
     );
     if (await this.hackBankConfirmationStage(selectedBank[0], userData))
       this.hackBank(selectedBank[0], userData);
@@ -548,13 +548,13 @@ export class HackCommand extends DiscordCommand {
       await questionMsg.edit(Msg);
       await questionMsg.channel
         .awaitMessages(
-          (m: Discord.Message) => m.author.id == this.msg.author.id, //m.content == HackCommand.HACKER_SCRIPTS[randomDifficulty][randomQuestionIndex].primaryCmd &&
+          (m: Discord.Message) => m.author.id === this.msg.author.id, //m.content == HackCommand.HACKER_SCRIPTS[randomDifficulty][randomQuestionIndex].primaryCmd &&
           { max: 1, time: 15000 }
         )
         .then(
           c =>
             (CorrentAnswers +=
-              c.first().content ==
+              c.first().content ===
               LearnCommand.HACKER_SCRIPTS[randomDifficulty][randomQuestionIndex]
                 .primaryCmd
                 ? 1

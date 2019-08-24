@@ -17,7 +17,7 @@ export class UserStatsCommand extends DiscordCommand {
         let Msg = new Discord.RichEmbed();
         if (userData) {
           const currentLevelData = [...DiscordBotRun.LevelSystemXp].filter(
-            stage => stage.level == userData.level.current
+            stage => stage.level === userData.level.current
           );
           Msg.setColor("#60BE82")
             .setAuthor(`My IP: ${userData.ip}  (Dont share this with anyone!)`)
