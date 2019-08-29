@@ -49,7 +49,7 @@ export class DiscordBotRun {
     this.botClient.login(process.env.BOT_AUTHTOKEN);
     this.botClient.on("ready", () => {
       this.botClient.user.setActivity(
-        `Hackers |  ${process.env.BOT_PREFIX}help`,
+        `Hackers |  ${process.env.BOT_PREFIX}help | v${process.env.BOT_V}`,
         { type: "WATCHING" }
       );
       // blapi.setLogging(true);
@@ -103,7 +103,9 @@ export class DiscordBotRun {
               userID: receivedMessage.author.id,
               status: true
             });
-          if (userData.inHack.isInHack) return;
+          // if user is alady in a game or a hack Quit
+          if (userData.inHack.isInHack || userData.ingame.isInGame) return;
+
           // checks if the user still active every 10 minutes
           if (!this.CURRENTLY_ONLINE.has(receivedMessage.author.id)) {
             this.CURRENTLY_ONLINE.add(receivedMessage.author.id);
@@ -237,7 +239,7 @@ export class DiscordBotRun {
           )
           .addField(
             "README: DISCLAIMER:",
-            "HackerIO is an online educational game, IS JUST A GAME. DONT SHARE IP (you will be foolish to! 🦝)"
+            "HackerIO is an online educational game, IS JUST A GAME. DONT SHARE IP (you will be foolish to!)"
           )
           .addField("New Players", [
             `0. Your account has been created, Please re-enter a command you want to execute`,

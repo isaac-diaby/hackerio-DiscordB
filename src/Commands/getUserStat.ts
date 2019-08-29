@@ -32,7 +32,7 @@ export class UserStatsCommand extends DiscordCommand {
               }`,
               true
             )
-            .addField("Crypo", `${userData.money}`)
+            .addField("Crypo", `${userData.crypo}`)
             .addField("Elite", `${userData.playerStat.elite}`, true)
             .addField("Outcast", `${userData.playerStat.outcast}`, true)
             .addField(

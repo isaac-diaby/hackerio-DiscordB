@@ -111,7 +111,7 @@ export class HelpCommand extends DiscordCommand {
           )
         : Msg.addBlankField(true);
       Msg.addBlankField();
-      ++logIndex;
+      logIndex = logIndex + 1;
     });
     return Msg;
   }

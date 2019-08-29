@@ -28,7 +28,7 @@ export class EliteCommand extends DiscordCommand {
               .setDescription("These players are harder to hack")
               .addField("EP perks ⭐", [
                 "- Enemies have a  (level*0.072) =  just over 13%+ disadvantage success rate when trying to hack you!",
-                "- You are able to protect more of your money . Only 20% of your money is at risk when getting hacked (instead of 60%).",
+                "- You are able to protect more of your crypo . Only 20% of your crypo is at risk when getting hacked (instead of 60%).",
                 "- When hacking a target you get a better chance of stealing more crypo's 💸",
                 "- Only pay 80% when paying to get off the out casted players list"
               ])

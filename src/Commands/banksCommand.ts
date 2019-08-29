@@ -73,7 +73,7 @@ export class BanksCommand extends DiscordCommand {
         "hack -b <Optional Bank (Name | Number)>"
       )
       .setFooter(
-        "Remember to hack a bank you need to be around the same level as the bank. You also need enough money to cover your lose."
+        "Remember to hack a bank you need to be around the same level as the bank. You also need enough crypo to cover your lose."
       );
     this.sendMsgViaDm(Msg);
   }

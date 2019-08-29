@@ -14,14 +14,27 @@ export abstract class DiscordCommand {
     this.msg = message;
     this.args = cmdArguments;
   }
-  async sendMsgViaDm(message: Discord.RichEmbed | string) {
-    return this.msg.author.send(message).catch(e => {
+  async sendMsgViaDm(
+    message: Discord.RichEmbed | string,
+    user: Discord.User = this.msg.author
+  ) {
+    return user.send(message).catch(e => {
       this.msg.channel.send(
         new Discord.RichEmbed().setDescription(
           "📌 Please make sure you have 'Direct Message' enabled"
         )
       );
       return undefined;
+    });
+  }
+
+  /**
+   * safely delete a message
+   * - message the message that you want to make disappear
+   */
+  async deleteMessageIfCan(message: Discord.Message, time: number = 0) {
+    return message.delete(time).catch(e => {
+      message.channel.send("Missing Manage Messages Role");
     });
   }
 }
