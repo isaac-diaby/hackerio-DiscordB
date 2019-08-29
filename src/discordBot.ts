@@ -38,9 +38,9 @@ export class DiscordBotRun {
     "mythicalbots.xyz": process.env.SC_MYTHB,
     "yabl.xyz": process.env.SC_YABL,
     "discordbotreviews.xyz": process.env.SC_DBR,
-    "discordbotlist.com": process.env.SC_DBL
+    "discordbotlist.com": process.env.SC_DBL,
+    "divinediscordbots.com": process.env.SC_DBL
 
-    // "divinediscordbots.com": "null",
     // "discordbots.fun": "null"
   };
 
@@ -49,7 +49,9 @@ export class DiscordBotRun {
     this.botClient.login(process.env.BOT_AUTHTOKEN);
     this.botClient.on("ready", () => {
       this.botClient.user.setActivity(
-        `Hackers |  ${process.env.BOT_PREFIX}help | v${process.env.BOT_V}`,
+        `Hackers |  ${process.env.BOT_PREFIX}help | v${
+          process.env.BOT_VERSION
+        }`,
         { type: "WATCHING" }
       );
       // blapi.setLogging(true);
