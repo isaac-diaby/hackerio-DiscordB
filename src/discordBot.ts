@@ -2,7 +2,8 @@ import * as Discord from "discord.js";
 import { GameCommandsOBJ } from "./Commands";
 import { UserMD, IUserState, uuidv4 } from "./Models/userState";
 import { EliteCommand } from "./Commands/eliteCommand";
-
+// @ts-ignore
+import blapi from "blapi";
 export class DiscordBotRun {
   mainGuildData = {
     id: "566982444822036500",
@@ -18,7 +19,6 @@ export class DiscordBotRun {
 
   port: number = 5000;
   botClient: Discord.Client;
-  dbl: any;
   CURRENTLY_ONLINE: Set<string> = new Set();
   // Get the leveling up Xp
   static LevelSystemXp: Set<{ level: number; xp: number | string }> = new Set([
@@ -31,6 +31,18 @@ export class DiscordBotRun {
       yield { level: 200, xp: "MAX" };
     })()
   ]);
+  //
+  apiKeys = {
+    "discordbots.org": process.env.SC_DBS,
+    "botlist.space": process.env.SC_DBSPACE,
+    "mythicalbots.xyz": process.env.SC_MYTHB,
+    "yabl.xyz": process.env.SC_YABL,
+    "discordbotreviews.xyz": process.env.SC_DBR,
+    "discordbotlist.com": process.env.SC_DBL
+
+    // "divinediscordbots.com": "null",
+    // "discordbots.fun": "null"
+  };
 
   constructor() {
     this.botClient = new Discord.Client();
@@ -40,6 +52,8 @@ export class DiscordBotRun {
         `Hackers |  ${process.env.BOT_PREFIX}help`,
         { type: "WATCHING" }
       );
+      // blapi.setLogging(true);
+      blapi.handle(this.botClient, this.apiKeys, 15);
       console.log(`${this.botClient.user.username} is online`);
       this.botOnlineListen();
       // console.log(DiscordBotRun.LevelSystemXp)
