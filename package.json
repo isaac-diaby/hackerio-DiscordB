@@ -11,7 +11,8 @@
     "blapi": "^1.1.1",
     "discord.js": "^11.5.1",
     "dotenv": "^8.0.0",
-    "mongoose": "^5.6.0"
+    "mongoose": "^5.6.0",
+    "request": "^2.88.0"
   },
   "devDependencies": {
     "@types/dotenv": "6.1.1",
@@ -27,7 +28,13 @@
     "type": "git",
     "url": "git+ssh://git@github.com/isaac-diaby/hackerio-DiscordB.git"
   },
-  "keywords": ["hackerio", "discord", "bot", "online", "game"],
+  "keywords": [
+    "hackerio",
+    "discord",
+    "bot",
+    "online",
+    "game"
+  ],
   "private": true,
   "author": "isaac-diaby <isaac.diaby.code@gmail.com>",
   "license": "ISC",

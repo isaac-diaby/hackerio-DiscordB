@@ -4,6 +4,24 @@ export abstract class DiscordCommand {
   botClient: Discord.Client;
   msg: Discord.Message;
   args: Array<string>;
+
+  mainGuildData = {
+    id: "566982444822036500",
+    roles: {
+      team: "616673712250552321"
+    },
+    channels: {
+      claimedPerksLog: {
+        channel: "588462707594887185"
+      },
+      dblVotesLog: {
+        channel: "600027239190495236"
+      },
+      suggestions: {
+        channel: "596871700423901221"
+      }
+    }
+  };
   constructor(
     client: Discord.Client,
     message: Discord.Message,

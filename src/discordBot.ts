@@ -105,36 +105,36 @@ export class DiscordBotRun {
               userID: receivedMessage.author.id,
               status: true
             });
-          // if user is alady in a game or a hack Quit
-          if (userData.inHack.isInHack || userData.ingame.isInGame) return;
-
-          // checks if the user still active every 10 minutes
-          if (!this.CURRENTLY_ONLINE.has(receivedMessage.author.id)) {
-            this.CURRENTLY_ONLINE.add(receivedMessage.author.id);
-            const StatusUpdate = setInterval(() => {
+            
+            // checks if the user still active every 10 minutes
+            if (!this.CURRENTLY_ONLINE.has(receivedMessage.author.id)) {
+              this.CURRENTLY_ONLINE.add(receivedMessage.author.id);
+              const StatusUpdate = setInterval(() => {
               if (
                 receivedMessage.author.presence.status === "idle" ||
                 receivedMessage.author.presence.status === "offline"
-              ) {
-                this.setUserToOnline({
-                  userID: receivedMessage.author.id,
-                  status: false
-                });
-                this.CURRENTLY_ONLINE.delete(receivedMessage.author.id);
-                clearInterval(StatusUpdate);
-              }
-              this.checkIfUserLeveledUp(userData, receivedMessage);
-              this.checkIfStillElite(receivedMessage.author);
-            }, 600000);
-          }
-
-          // Parse the text to a command format
+                ) {
+                  this.setUserToOnline({
+                    userID: receivedMessage.author.id,
+                    status: false
+                  });
+                  this.CURRENTLY_ONLINE.delete(receivedMessage.author.id);
+                  clearInterval(StatusUpdate);
+                }
+                this.checkIfUserLeveledUp(userData, receivedMessage);
+                this.checkIfStillElite(receivedMessage.author);
+              }, 600000);
+            }
+            
+            // Parse the text to a command format
           let commands = receivedMessage.content
-            .toLowerCase()
-            .substr(process.env.BOT_PREFIX.length)
-            .trim()
-            .split(" ");
+          .toLowerCase()
+          .substr(process.env.BOT_PREFIX.length)
+          .trim()
+          .split(" ");
           let primaryCmd = commands[0];
+          // if user is alady in a game or a hack Quit
+          if ((userData.inHack.isInHack || userData.ingame.isInGame) && (primaryCmd !== '!leave')) return;
           let argsCmd = commands.slice(1);
           if (primaryCmd === "levelup") {
             this.checkIfUserLeveledUp(userData, receivedMessage);

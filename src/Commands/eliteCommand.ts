@@ -76,7 +76,7 @@ export class EliteCommand extends DiscordCommand {
       : Msg.setDescription("Expired Membership to elite ⌛").addField(
           "Rejoin",
           "http://bit.ly/CGBdonate"
-        );
+        ).setFooter("Then type this command again to active Elite");
     UserMD.findOneAndUpdate(
       { userID },
       {

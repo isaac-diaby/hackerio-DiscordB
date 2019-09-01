@@ -9,6 +9,7 @@ import { EliteCommand } from "./eliteCommand";
 import { Connect4 } from "./OnlineGames/connect4Game";
 import { LeaveGameCommand } from "./leaveCommand";
 import { DeleteCommand } from "./deleteCommand";
+import { SuggestCommand } from "./suggestCommand";
 
 export interface CommandObj {
   execute: any;
@@ -22,6 +23,11 @@ export const GameCommandsOBJ: { [key: string]: CommandObj } = {
     execute: HelpCommand,
     description: "Prints out help.",
     args: ["<command> = command"]
+  },
+  suggest: {
+    execute: SuggestCommand,
+    description: "suggest new updates/improvements and report bugs",
+    args: ["<mode> = update | bug", "<suggestion message>"]
   },
   stat: {
     execute: UserStatsCommand,
