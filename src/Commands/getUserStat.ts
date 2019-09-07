@@ -32,22 +32,41 @@ export class UserStatsCommand extends DiscordCommand {
               }`,
               true
             )
-            .addField("Crypo", `${userData.crypo}`)
-            .addField("Elite", `${userData.playerStat.elite}`, true)
-            .addField("Outcast", `${userData.playerStat.outcast}`, true)
-            .addField(
-              `Logs`,
-              userData.log.length > 0
-                ? `${userData.log.length} in Log`
-                : "EMPTY",
+            .addField("Crypto", `${userData.crypto}`)
+            .addField("Elite", `${userData.playerStat.elite}`, true);
+          // add a field that allows Elite users see when thier status expires
+          if (userData.playerStat.elite)
+            Msg.addField(
+              "Elite Expiry Date",
+              userData.playerStat.eliteExpireDate.toString().substr(0, 25),
               true
             )
-            .addField(`Last Hacked`, `${userData.inHack.lastHack}`, true)
-            .setFooter(`Joined ${userData.playerStat.joinedDate}`);
+              .addField("Outcast", `${userData.playerStat.outcast}`, true)
+              .addField(
+                `Logs`,
+                userData.log.length > 0
+                  ? `${userData.log.length} in Log`
+                  : "EMPTY",
+                true
+              )
+
+              .addField(
+                `Last Hacked`,
+                userData.inHack.lastHack != null
+                  ? userData.inHack.lastHack.toString().substr(0, 25)
+                  : null,
+                true
+              )
+              .setFooter(
+                `Joined ${userData.playerStat.joinedDate
+                  .toString()
+                  .substr(0, 25)}`
+              );
         }
         this.sendMsgViaDm(Msg);
       })
       .catch(e => {
+        console.log(e);
         let Msg = new Discord.RichEmbed()
           .setColor("#F44336")
           .setDescription("No user Found in DB");

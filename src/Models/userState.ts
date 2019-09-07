@@ -30,13 +30,14 @@ const userSchema = new Schema({
   online: { type: Boolean, default: true },
   playerStat: {
     elite: { type: Boolean, default: false },
+    eliteExpireDate: { type: Date, default: null },
     outcast: { type: Boolean, default: false },
     wins: { type: Number, default: 0 },
     loses: { type: Number, default: 0 },
     streak: { type: Number, default: 0 },
     joinedDate: { type: Date, default: Date.now }
   },
-  crypo: { type: Number, default: 300 },
+  crypto: { type: Number, default: 1500 },
   level: {
     current: { type: Number, default: 1 },
     xp: { type: Number, default: 0 }
@@ -79,9 +80,10 @@ export interface IUserState {
     current: number;
     xp: number;
   };
-  crypo: number;
+  crypto: number;
   playerStat: {
     elite: Boolean;
+    eliteExpireDate: Date;
     outcast: Boolean;
     wins: number;
     loses: number;

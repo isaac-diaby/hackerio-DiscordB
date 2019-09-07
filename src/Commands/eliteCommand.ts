@@ -19,7 +19,10 @@ export class EliteCommand extends DiscordCommand {
       (userData: IUserState) => {
         switch (this.args[0]) {
           case "-j":
-            this.joinElite(userData.userID);
+            this.joinElite(userData.userID, userData.playerStat.elite);
+            break;
+          case "-join":
+            this.joinElite(userData.userID, userData.playerStat.elite);
             break;
           default:
             const Msg = new Discord.RichEmbed()
@@ -28,13 +31,15 @@ export class EliteCommand extends DiscordCommand {
               .setDescription("These players are harder to hack")
               .addField("EP perks ⭐", [
                 "- Enemies have a  (level*0.072) =  just over 13%+ disadvantage success rate when trying to hack you!",
-                "- You are able to protect more of your crypo . Only 20% of your crypo is at risk when getting hacked (instead of 60%).",
-                "- When hacking a target you get a better chance of stealing more crypo's 💸",
+                "- You are able to protect more of your crypto . Only 20% of your crypto is at risk when getting hacked (instead of 60%).",
+                "- When hacking a target you get a better chance of stealing more crypto's 💸",
                 "- Only pay 80% when paying to get off the out casted players list"
               ])
 
               .setFooter(
-                `To join the elte list type ${process.env.BOT_PREFIX}elite -j`
+                `To join the elte list type ${
+                  process.env.BOT_PREFIX
+                }elite -join`
               );
             this.sendMsgViaDm(Msg);
             return;
@@ -42,7 +47,8 @@ export class EliteCommand extends DiscordCommand {
       }
     );
   }
-  joinElite(userID: string) {
+  joinElite(userID: string, alreadyElite: Boolean) {
+    if (alreadyElite) return this.msg.reply("You Are Already Elite");
     const Msg = new Discord.RichEmbed()
       .setColor("#60BE82")
       .setTitle("How To Become Elite")
@@ -50,7 +56,7 @@ export class EliteCommand extends DiscordCommand {
       .addField("1. Join The Official Sever", "http://bit.ly/CGBofficialServer")
       .addField(
         "2. Donate To Get The Title: HackerIO Elite ",
-        "http://bit.ly/CGBdonate"
+        "http://bit.ly/HIOdonate"
       )
       .setFooter("Then type this command again to active Elite");
     const isUserInOfficialServer = this.botClient.guilds
@@ -61,26 +67,29 @@ export class EliteCommand extends DiscordCommand {
       //   console.log(this.botClient.guilds.get('566982444822036500').roles)
       // HackerIO Elite == 605180133535645745
       if (!isUserInOfficialServer.roles.has("605180133535645745"))
-        return this.sendMsgViaDm(Msg);
+        return this.msg.channel.send(Msg);
       EliteCommand.altEliteStatus(userID, true, this.msg.author);
     } else {
-      this.sendMsgViaDm(Msg);
+      this.msg.channel.send(Msg);
     }
   }
   static altEliteStatus(userID: string, isElite: boolean, user: Discord.User) {
     const Msg = new Discord.RichEmbed()
       .setColor("#F44336")
-      .setTitle("Elite Update");
+      .setTitle("Elite Update")
+      .setAuthor(user.tag, user.avatarURL);
     isElite
       ? Msg.setDescription("Welcome to the elite ⚔.").setColor("#60BE82")
-      : Msg.setDescription("Expired Membership to elite ⌛").addField(
-          "Rejoin",
-          "http://bit.ly/CGBdonate"
-        ).setFooter("Then type this command again to active Elite");
+      : Msg.setDescription("Expired Membership to elite ⌛")
+          .addField("Rejoin", "http://bit.ly/HIOdonate")
+          .setFooter("Then type elite -j command again to active Elite");
     UserMD.findOneAndUpdate(
       { userID },
       {
-        "playerStat.elite": isElite
+        "playerStat.elite": isElite,
+        "playerStat.eliteExpireDate": new Date(
+          new Date().setMonth(new Date().getMonth() + (1 % 12))
+        ) // plus one month
       }
     ).then(d => user.send(Msg));
   }

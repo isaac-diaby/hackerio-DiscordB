@@ -39,7 +39,7 @@ export class DiscordBotRun {
     "yabl.xyz": process.env.SC_YABL,
     "discordbotreviews.xyz": process.env.SC_DBR,
     "discordbotlist.com": process.env.SC_DBL,
-    "divinediscordbots.com": process.env.SC_DBL
+    "divinediscordbots.com": process.env.SC_DDB
 
     // "discordbots.fun": "null"
   };
@@ -54,9 +54,19 @@ export class DiscordBotRun {
         }`,
         { type: "WATCHING" }
       );
+
+      // send server count to botlisting sites
       // blapi.setLogging(true);
       blapi.handle(this.botClient, this.apiKeys, 15);
       console.log(`${this.botClient.user.username} is online`);
+      // set all users to offline
+      UserMD.updateMany(
+        { online: true },
+        {
+          online: false
+        }
+      ).exec();
+
       this.botOnlineListen();
       // console.log(DiscordBotRun.LevelSystemXp)
     });
@@ -105,36 +115,43 @@ export class DiscordBotRun {
               userID: receivedMessage.author.id,
               status: true
             });
-            
-            // checks if the user still active every 10 minutes
-            if (!this.CURRENTLY_ONLINE.has(receivedMessage.author.id)) {
-              this.CURRENTLY_ONLINE.add(receivedMessage.author.id);
-              const StatusUpdate = setInterval(() => {
+
+          // checks if the user still active every userUpdateTime
+          const userUpdateTime = 20000; // 20 seconds
+
+          if (!this.CURRENTLY_ONLINE.has(receivedMessage.author.id)) {
+            this.CURRENTLY_ONLINE.add(receivedMessage.author.id);
+            const StatusUpdate = setInterval(() => {
               if (
                 receivedMessage.author.presence.status === "idle" ||
                 receivedMessage.author.presence.status === "offline"
-                ) {
-                  this.setUserToOnline({
-                    userID: receivedMessage.author.id,
-                    status: false
-                  });
-                  this.CURRENTLY_ONLINE.delete(receivedMessage.author.id);
-                  clearInterval(StatusUpdate);
-                }
-                this.checkIfUserLeveledUp(userData, receivedMessage);
-                this.checkIfStillElite(receivedMessage.author);
-              }, 600000);
-            }
-            
-            // Parse the text to a command format
+              ) {
+                this.setUserToOnline({
+                  userID: receivedMessage.author.id,
+                  status: false
+                });
+                this.CURRENTLY_ONLINE.delete(receivedMessage.author.id);
+                clearInterval(StatusUpdate);
+              }
+              this.checkIfUserLeveledUp(userData, receivedMessage);
+            }, userUpdateTime);
+          }
+
+          if (userData.playerStat.elite)
+            this.checkIfStillElite(receivedMessage.author, userData);
+          // Parse the text to a command format
           let commands = receivedMessage.content
-          .toLowerCase()
-          .substr(process.env.BOT_PREFIX.length)
-          .trim()
-          .split(" ");
+            .toLowerCase()
+            .substr(process.env.BOT_PREFIX.length)
+            .trim()
+            .split(" ");
           let primaryCmd = commands[0];
           // if user is alady in a game or a hack Quit
-          if ((userData.inHack.isInHack || userData.ingame.isInGame) && (primaryCmd !== '!leave')) return;
+          if (
+            (userData.inHack.isInHack || userData.ingame.isInGame) &&
+            primaryCmd !== "!leave"
+          )
+            return;
           let argsCmd = commands.slice(1);
           if (primaryCmd === "levelup") {
             this.checkIfUserLeveledUp(userData, receivedMessage);
@@ -277,14 +294,33 @@ export class DiscordBotRun {
         // discordChannel.send(e)
       });
   }
-  checkIfStillElite(user: Discord.User) {
+  checkIfStillElite(user: Discord.User, userData: IUserState) {
     const isUserInOfficialServer = this.botClient.guilds
       .get("566982444822036500")
       .members.get(user.id);
+    // @ts-ignore
+    if (userData.playerStat.eliteExpireDate <= Date.now().valueOf()) {
+      // membership expired
+      isUserInOfficialServer
+        .removeRole("605180133535645745", "Membership has expired")
+        .catch(e =>
+          console.log("tried to remove elite role from someone high up")
+        );
+      return EliteCommand.altEliteStatus(user.id, false, user);
+    }
     if (isUserInOfficialServer !== undefined) {
       // HackerIO Elite == 605180133535645745
-      if (!isUserInOfficialServer.roles.has("605180133535645745"))
+      if (!isUserInOfficialServer.roles.has("605180133535645745")) {
+        isUserInOfficialServer
+          .removeRole("605180133535645745", "Membership has expired")
+          .catch(e =>
+            console.log("tried to remove elite role from someone high up")
+          );
         return EliteCommand.altEliteStatus(user.id, false, user);
+      }
+    } else {
+      // this means they left the support server. not allowed if your elite!
+      return EliteCommand.altEliteStatus(user.id, false, user);
     }
   }
 }

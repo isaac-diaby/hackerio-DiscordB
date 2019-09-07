@@ -34,7 +34,7 @@ export class DeleteCommand extends DiscordCommand {
       .setDescription("Are You Sure You Want To Delete This Account?")
       .addField("Level", this.userData.level.current, true)
       .addField("Experience", this.userData.level.xp, true)
-      .addField("crypo", this.userData.crypo, true)
+      .addField("Crypto", this.userData.crypto, true)
 
       .addField("Wins", this.userData.playerStat.wins, true)
       .addField("Loses", this.userData.playerStat.loses, true)

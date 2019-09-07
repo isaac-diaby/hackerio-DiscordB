@@ -292,8 +292,8 @@ export abstract class OnlineGames extends DiscordCommand {
       });
   }
   /**
-   * added crypo's to the player account on the database
-   * @param crypo amount to add to the players accoun
+   * added crypto's to the player account on the database
+   * @param crypto amount to add to the players accoun
    * @param playerID the players id
    * @param guildID the guild that they are in
    */
@@ -307,7 +307,7 @@ export abstract class OnlineGames extends DiscordCommand {
       const rewardUpdates = won
         ? {
             $inc: {
-              crypo: coinsToAdd,
+              crypto: coinsToAdd,
               "playerStat.wins": 1,
               "playerStat.streak": 1,
               "level.xp": 3 * coinsToAdd
@@ -316,7 +316,7 @@ export abstract class OnlineGames extends DiscordCommand {
         : {
             "playerStat.streak": 0,
             $inc: {
-              crypo: coinsToAdd,
+              crypto: coinsToAdd,
               "playerStat.loses": 1,
               "level.xp": 3 * coinsToAdd
             }

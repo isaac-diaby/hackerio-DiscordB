@@ -19,6 +19,7 @@ export class HackCommand extends DiscordCommand {
     super(client, message, cmdArguments);
     UserMD.findOne({ userID: message.author.id }).then(
       async (userData: IUserState) => {
+        console.log(await this.hackTypingPercentage(1, 90));
         switch (this.args[0]) {
           case "-b":
             await this.hackBankInit(userData);
@@ -108,9 +109,9 @@ export class HackCommand extends DiscordCommand {
     userData: IUserState
   ) {
     const Msg = new Discord.RichEmbed();
-    let myFinalMoney: number = userData.crypo;
+    let myFinalMoney: number = userData.crypto;
     let myFinalXp: number = userData.level.xp;
-    let enemyFinalMoney: number = enemyData.crypo;
+    let enemyFinalMoney: number = enemyData.crypto;
     let enemylogMsg: Ilog = {
       type: !won ? "DEFENDED" : "HACKED",
       time: Date.now(),
@@ -126,15 +127,15 @@ export class HackCommand extends DiscordCommand {
     let ememyOffering;
     if (enemyData.playerStat.outcast) {
       ememyOffering = Math.round(
-        (enemyData.crypo * 0.6) / this.getRandomPercentage(145, 200)
+        (enemyData.crypto * 0.6) / this.getRandomPercentage(145, 200)
       );
     } else if (enemyData.playerStat.elite) {
       ememyOffering = Math.round(
-        (enemyData.crypo * 0.2) / this.getRandomPercentage(165, 220)
+        (enemyData.crypto * 0.2) / this.getRandomPercentage(165, 220)
       );
     } else {
       ememyOffering = Math.round(
-        (enemyData.crypo * 0.4) / this.getRandomPercentage(150, 200)
+        (enemyData.crypto * 0.4) / this.getRandomPercentage(150, 200)
       );
     }
     if (won) {
@@ -157,7 +158,7 @@ export class HackCommand extends DiscordCommand {
       .setColor(`${won ? "#60BE82" : "#F44336"} `)
       .addField("Stake", `${won ? ememyOffering : 0}`)
       .addField("Xp Gained", `${won ? ememyOffering : XpGained}`)
-      .addField("My Account Crypo", myFinalMoney);
+      .addField("My Account Crypto", myFinalMoney);
     await this.UpdateUserHackingStatus(userData.userID, false); // TODO: make and delete the hacking meta in db
     await this.AfterHackProfit(
       userData.userID,
@@ -190,7 +191,7 @@ export class HackCommand extends DiscordCommand {
     } else {
       difficulty = "0 - 66";
     }
-    const roughMoneyEstimate = Math.floor(enemyData.crypo / 1000) * 1000;
+    const roughMoneyEstimate = Math.floor(enemyData.crypto / 1000) * 1000;
     let Msg = new Discord.RichEmbed()
       .setTitle(`Hacking ${enemyData.ip}`)
       .setDescription("Are you sure you want to continue with this action?")
@@ -378,11 +379,11 @@ export class HackCommand extends DiscordCommand {
   ) {
     // let continueToHack = false
 
-    if (userData.crypo < bankDetails.hackPrice) {
+    if (userData.crypto < bankDetails.hackPrice) {
       await this.sendMsgViaDm(
         `You need to at least have ${
           bankDetails.hackPrice
-        } crypo's in your account`
+        } crypto's in your account`
       );
       return;
     }
@@ -395,9 +396,9 @@ export class HackCommand extends DiscordCommand {
       .addField("Required Money To Cover Your loses", bankDetails.hackPrice * 2)
       .addBlankField()
       .addField("Note Risk", [
-        "You need to have at least half the required crypo!",
+        "You need to have at least half the required crypto!",
         "If you fail your hack the bank, you will be fined (90 - 100%)",
-        "If you dont have enough crypo to pay the fine your IP will be marked as outcast!"
+        "If you dont have enough crypto to pay the fine your IP will be marked as outcast!"
       ])
       .setFooter("please read the conditions before selecting");
 
@@ -448,7 +449,7 @@ export class HackCommand extends DiscordCommand {
   /**
    *
    * @param won if the player won the hack
-   * @param CEB commands executed % for extra crypo
+   * @param CEB commands executed % for extra crypto
    * @param listedEffected boosts the profit
    * @param bankDetails
    * @param userData
@@ -464,7 +465,7 @@ export class HackCommand extends DiscordCommand {
       bankDetails.hackPrice * CEB +
         bankDetails.hackPrice * (listedEffected.winChanceAlt / 100)
     );
-    let myFinalMoney: number = userData.crypo;
+    let myFinalMoney: number = userData.crypto;
     let myFinalXp: number = userData.level.xp;
     if (won) {
       myFinalMoney += bankOffering;
@@ -545,6 +546,7 @@ export class HackCommand extends DiscordCommand {
           LearnCommand.HACKER_SCRIPTS[randomDifficulty][randomQuestionIndex]
             .description
         )
+        .addField(">...", "")
         .setFooter("If You dont know the answer just send an guest to skip");
       await questionMsg.edit(Msg);
       await questionMsg.channel
@@ -579,12 +581,12 @@ export class HackCommand extends DiscordCommand {
   /**
    *
    * @param userID
-   * @param crypo
+   * @param crypto
    * @param log
    */
   async AfterHackProfit(
     userID: string,
-    crypo: number,
+    crypto: number,
     myFinalXp: number,
     log: Ilog,
     isOutcast: boolean
@@ -594,7 +596,7 @@ export class HackCommand extends DiscordCommand {
       {
         "playerStat.outcast": isOutcast,
         "level.xp": myFinalXp,
-        crypo,
+        crypto,
         $push: { log }
       }
     )

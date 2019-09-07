@@ -26,7 +26,7 @@ export class OutCastCommand extends DiscordCommand {
               .setDescription("These players are easy targets!")
               .addField("Hacking A OCP", [
                 "- When hacking an OCP gives you (the hacker) an advantage of OCP (level*0.072) =  just over 13%+ success rate.",
-                "- You are able to steal more of an OCP's crypo. Only 40% of the OCP is protected against hackers (instead of 60%)."
+                "- You are able to steal more of an OCP's crypto. Only 40% of the OCP is protected against hackers (instead of 60%)."
               ])
               .addField(
                 "Hacking As A OCP",
@@ -47,9 +47,9 @@ export class OutCastCommand extends DiscordCommand {
   async outcastPay(userData: IUserState) {
     let cost: number = userData.level.current * 1000;
     if (userData.playerStat.elite) cost = Math.round(cost * 0.8);
-    if (userData.crypo < cost)
+    if (userData.crypto < cost)
       return this.sendMsgViaDm(
-        `You need at least ${cost} crypo's in your account to buy out the Out Cast list🙄`
+        `You need at least ${cost} crypto's in your account to buy out the Out Cast list🙄`
       );
     if (!(await this.outcastPayConfirmationStage(cost, userData))) return;
 
@@ -58,7 +58,7 @@ export class OutCastCommand extends DiscordCommand {
       {
         "playerStat.outcast": false,
         "level.xp": Math.round(userData.level.xp + cost),
-        crypo: userData.crypo - cost
+        crypto: userData.crypto - cost
       }
     )
       .then(d =>
@@ -75,7 +75,7 @@ export class OutCastCommand extends DiscordCommand {
       .setDescription("Are you sure you want to continue with this action?")
       .setColor("#F44336")
       .addField("Cost", cost, true)
-      .addField("Crypo's After Transaction", userData.crypo - cost, true)
+      .addField("Crypto's After Transaction", userData.crypto - cost, true)
       .addBlankField()
       .addField("Description", [
         "After this you will final be able to win more! and loose less when being hacked. i think its worth it!"
