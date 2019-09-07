@@ -19,7 +19,6 @@ export class HackCommand extends DiscordCommand {
     super(client, message, cmdArguments);
     UserMD.findOne({ userID: message.author.id }).then(
       async (userData: IUserState) => {
-        console.log(await this.hackTypingPercentage(1, 90));
         switch (this.args[0]) {
           case "-b":
             await this.hackBankInit(userData);
@@ -41,7 +40,7 @@ export class HackCommand extends DiscordCommand {
     if (selectedIp === "-r" || selectedIp === "random") {
       const randomUser = await this.getRandomOfflineUserData();
       if (randomUser == null)
-        return this.sendMsgViaDm(
+        return this.msg.channel.send(
           new Discord.RichEmbed()
             .setColor("#F44336")
             .setTitle("Couldn't Find A Random Player.")
@@ -57,7 +56,7 @@ export class HackCommand extends DiscordCommand {
 
     // console.log(userExists)
     if (enemyData == null) {
-      await this.sendMsgViaDm(
+      await this.msg.channel.send(
         `could not find user with an ip of ${selectedIp}. Please enter a valid ip or random. \n${
           process.env.BOT_PREFIX
         }hack -u <ip = ip | (-r | random)> `
@@ -179,7 +178,7 @@ export class HackCommand extends DiscordCommand {
       enemylogMsg,
       false
     );
-    await this.sendMsgViaDm(Msg);
+    await this.msg.channel.send(Msg);
   }
 
   async hackUserConfirmationStage(enemyData: IUserState, userData: IUserState) {
@@ -217,6 +216,7 @@ export class HackCommand extends DiscordCommand {
       .setFooter("please read the conditions before selecting");
 
     let sentConfMSG = (await this.sendMsgViaDm(Msg)) as Discord.Message;
+    await this.msg.reply("Confirmation message is sent to you via DM.");
     // waits for the reactions to be added
     await Promise.all([
       sentConfMSG.react(this.acceptEmoji),
@@ -308,7 +308,7 @@ export class HackCommand extends DiscordCommand {
             true
           )
           .setFooter(" type quit to stop");
-        const userMessage: Discord.Message = (await this.sendMsgViaDm(
+        const userMessage: Discord.Message = (await this.msg.channel.send(
           Msg
         )) as Discord.Message;
         await userMessage.channel
@@ -325,7 +325,7 @@ export class HackCommand extends DiscordCommand {
     }
     if (selectedBankName === "quit") {
       if (availableBanksOnly.length === 0)
-        await this.sendMsgViaDm(
+        await this.msg.channel.send(
           "You need to be at least level 5 to interact with Banks"
         );
       return;
@@ -380,7 +380,7 @@ export class HackCommand extends DiscordCommand {
     // let continueToHack = false
 
     if (userData.crypto < bankDetails.hackPrice) {
-      await this.sendMsgViaDm(
+      await this.msg.channel.send(
         `You need to at least have ${
           bankDetails.hackPrice
         } crypto's in your account`
@@ -401,8 +401,8 @@ export class HackCommand extends DiscordCommand {
         "If you dont have enough crypto to pay the fine your IP will be marked as outcast!"
       ])
       .setFooter("please read the conditions before selecting");
-
     let sentConfMSG = (await this.sendMsgViaDm(Msg)) as Discord.Message;
+    await this.msg.reply("Confirmation message is sent to you via DM.");
     // waits for the reactions to be added
     await Promise.all([
       sentConfMSG.react(this.acceptEmoji),
@@ -498,7 +498,7 @@ export class HackCommand extends DiscordCommand {
       },
       !won
     );
-    await this.sendMsgViaDm(Msg);
+    await this.msg.channel.send(Msg);
   }
 
   /**
@@ -521,7 +521,7 @@ export class HackCommand extends DiscordCommand {
       difficulty = 1;
     }
     let CorrentAnswers = 0;
-    let questionMsg: Discord.Message = (await this.sendMsgViaDm(
+    let questionMsg: Discord.Message = (await this.msg.channel.send(
       "Starting Hacking Session"
     )) as Discord.Message;
     for (let i = 1; i <= rounds; i++) {
@@ -546,7 +546,7 @@ export class HackCommand extends DiscordCommand {
           LearnCommand.HACKER_SCRIPTS[randomDifficulty][randomQuestionIndex]
             .description
         )
-        .addField(">...", "")
+        .addField(">", "...")
         .setFooter("If You dont know the answer just send an guest to skip");
       await questionMsg.edit(Msg);
       await questionMsg.channel

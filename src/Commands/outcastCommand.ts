@@ -17,7 +17,9 @@ export class OutCastCommand extends DiscordCommand {
         switch (this.args[0]) {
           case "-p":
             if (userData.playerStat.outcast) return this.outcastPay(userData);
-            this.sendMsgViaDm("You are not an out cast! no need to pay out");
+            this.msg.channel.send(
+              "You are not an out cast! no need to pay out"
+            );
             return;
           default:
             const Msg = new Discord.RichEmbed()
@@ -37,7 +39,7 @@ export class OutCastCommand extends DiscordCommand {
                   process.env.BOT_PREFIX
                 }outcast -p`
               );
-            this.sendMsgViaDm(Msg);
+            this.msg.channel.send(Msg);
             return;
         }
       }
@@ -48,7 +50,7 @@ export class OutCastCommand extends DiscordCommand {
     let cost: number = userData.level.current * 1000;
     if (userData.playerStat.elite) cost = Math.round(cost * 0.8);
     if (userData.crypto < cost)
-      return this.sendMsgViaDm(
+      return this.msg.channel.send(
         `You need at least ${cost} crypto's in your account to buy out the Out Cast list🙄`
       );
     if (!(await this.outcastPayConfirmationStage(cost, userData))) return;
@@ -62,7 +64,7 @@ export class OutCastCommand extends DiscordCommand {
       }
     )
       .then(d =>
-        this.sendMsgViaDm(
+        this.msg.channel.send(
           "🤗 You are off the Out Cast list, be more careful next time!"
         )
       )

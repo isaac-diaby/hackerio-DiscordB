@@ -30,15 +30,15 @@ export class HelpCommand extends DiscordCommand {
     } else {
       helpMessage.setDescription("Couldn't find that command");
     }
-    // @ts-ignore
-    this.sendMsgViaDm(helpMessage).then((m: Discord.Message) =>
-      m.delete(60000)
-    );
+    this.msg.channel
+      .send(helpMessage)
+      // @ts-ignore
+      .then((m: Discord.Message) => m.delete(60000));
   }
   getHelpAll(GameCommandsOBJ: { [key: string]: CommandObj }) {
     let page = 1;
 
-    this.sendMsgViaDm(this.GetHelpPage(page, GameCommandsOBJ)).then(
+    this.msg.channel.send(this.GetHelpPage(page, GameCommandsOBJ)).then(
       //@ts-ignore
       (m: Discord.Message) => {
         m.delete(60000);

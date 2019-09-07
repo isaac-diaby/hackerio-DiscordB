@@ -75,6 +75,6 @@ export class BanksCommand extends DiscordCommand {
       .setFooter(
         "Remember to hack a bank you need to be around the same level as the bank. You also need enough crypto to cover your lose."
       );
-    this.sendMsgViaDm(Msg);
+    this.msg.channel.send(Msg);
   }
 }

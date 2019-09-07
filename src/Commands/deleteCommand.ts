@@ -42,7 +42,7 @@ export class DeleteCommand extends DiscordCommand {
       .addField("Joined data", this.userData.playerStat.joinedDate)
       .setFooter(`please confirm this action by adding ${acceptEmoji}`);
 
-    let sentConfMSG = (await message.channel.send(
+    let sentConfMSG = (await this.sendMsgViaDm(
       ConfirmationMSG
     )) as Discord.Message;
     // waits for the reactions to be added

@@ -714,18 +714,18 @@ export class LearnCommand extends DiscordCommand {
       script => script.primaryCmd === primeCmd
     )[0];
     if (selectedCmd === undefined)
-      return this.sendMsgViaDm("could not find this command");
+      return this.msg.channel.send("could not find this command");
     const Msg = new Discord.RichEmbed()
       .setColor("#3BB2E2")
       .addField("Command", selectedCmd.primaryCmd, true)
       .addField("Program", selectedCmd.program, true)
       .addField("Description", selectedCmd.description, true)
       .addBlankField(true);
-    this.sendMsgViaDm(Msg);
+    this.msg.channel.send(Msg);
   }
   openLearningBook(page: number) {
     //@ts-ignore
-    this.sendMsgViaDm(this.GetPage(page)).then((m: Discord.Message) => {
+    this.msg.channel.send(this.GetPage(page)).then((m: Discord.Message) => {
       m.react("👈").then(mr => {
         m.react("👉");
         const backWordsFilter = (r: Discord.MessageReaction, u: Discord.User) =>

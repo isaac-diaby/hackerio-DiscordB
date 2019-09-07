@@ -55,7 +55,7 @@ export class LogCommand extends DiscordCommand {
       this.sendMsgViaDm(Msg);
     } catch (err) {
       console.log(err);
-      await this.sendMsgViaDm("😶 Could not find a log with that id");
+      await this.msg.channel.send("😶 Could not find a log with that id");
     }
   }
   async deleteLog(userDataLog: [Ilog], userID: string) {
@@ -67,22 +67,25 @@ export class LogCommand extends DiscordCommand {
         {
           log: []
         }
-      ).then(s => this.sendMsgViaDm("👀 Deleted All Logs"));
+      ).then(s => this.msg.channel.send("👀 Deleted All Logs"));
 
     if (userDataLog[parseInt(selectedLog, 10)] === undefined)
-      return await this.sendMsgViaDm("😶 Could not find a log with that id");
+      return await this.msg.channel.send(
+        "😶 Could not find a log with that id"
+      );
     await UserMD.findOneAndUpdate(
       { userID },
       {
         $pull: { log: userDataLog[parseInt(selectedLog, 10)] }
       }
-    ).then(s => this.sendMsgViaDm("👀 Deleted Log id: " + selectedLog));
+    ).then(s => this.msg.channel.send("👀 Deleted Log id: " + selectedLog));
   }
 
   myLogBrief(userDataLog: [Ilog], page: number) {
     //@ts-ignore
-    if (userDataLog.length === 0) return this.sendMsgViaDm("Your Log Is Empty");
-    this.sendMsgViaDm(this.GetLogPage(page, userDataLog)).then(
+    if (userDataLog.length === 0)
+      return this.msg.channel.send("Your Log Is Empty");
+    this.msg.channel.send(this.GetLogPage(page, userDataLog)).then(
       //@ts-ignore
       (m: Discord.Message) => {
         m.react("👈").then(mr => {
