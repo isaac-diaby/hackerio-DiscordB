@@ -272,7 +272,10 @@ export class DiscordBotRun {
             `4. Execute ${
               process.env.BOT_PREFIX
             }learn - get to know some of the commands that will help you get a better chance in your hacks. (very userful!)`,
-            "5. EXPLORE THE ENDLESS HACKING AND BETTING GAMES"
+            `4. Execute ${
+              process.env.BOT_PREFIX
+            }hack -u -r - this is your first random user hack, good luck!`,
+            "5. your all set to EXPLORE THE ENDLESS HACKING, EVENTS and  BETTING GAMES"
           ])
           .setFooter(
             "For more features and exclusive bonuses become a Donater!: http://bit.ly/CGBdonate"

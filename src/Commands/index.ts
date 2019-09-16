@@ -10,6 +10,7 @@ import { Connect4 } from "./OnlineGames/connect4Game";
 import { LeaveGameCommand } from "./leaveCommand";
 import { DeleteCommand } from "./deleteCommand";
 import { SuggestCommand } from "./suggestCommand";
+import { AdministratorCommand } from "./adminCommand";
 
 export interface CommandObj {
   execute: any;
@@ -84,5 +85,10 @@ export const GameCommandsOBJ: { [key: string]: CommandObj } = {
     execute: DeleteCommand,
     description: "WARNING: This Command Forever Deletes!",
     args: ["<mode> = account"]
+  },
+  "!admin": {
+    execute: AdministratorCommand,
+    description: "Administrators only ",
+    args: []
   }
 };

@@ -59,14 +59,14 @@ export class EliteCommand extends DiscordCommand {
         "http://bit.ly/HIOdonate"
       )
       .setFooter("Then type this command again to active Elite");
-    const isUserInOfficialServer = this.botClient.guilds
-      .get("566982444822036500")
-      .members.get(this.msg.author.id);
+    const isUserInOfficialServer = this.OfficialServer.members.get(
+      this.msg.author.id
+    );
     if (isUserInOfficialServer !== undefined) {
       // console.log('is in server', isUserInOfficialServer)
       //   console.log(this.botClient.guilds.get('566982444822036500').roles)
       // HackerIO Elite == 605180133535645745
-      if (!isUserInOfficialServer.roles.has("605180133535645745"))
+      if (!isUserInOfficialServer.roles.has(this.mainGuildData.roles.elite))
         return this.msg.channel.send(Msg);
       EliteCommand.altEliteStatus(userID, true, this.msg.author);
     } else {

@@ -8,7 +8,9 @@ export abstract class DiscordCommand {
   mainGuildData = {
     id: "566982444822036500",
     roles: {
-      team: "616673712250552321"
+      admin: "566985267635027978",
+      team: "616673712250552321",
+      elite: "605180133535645745"
     },
     channels: {
       claimedPerksLog: {
@@ -22,6 +24,7 @@ export abstract class DiscordCommand {
       }
     }
   };
+
   constructor(
     client: Discord.Client,
     message: Discord.Message,
@@ -59,5 +62,8 @@ export abstract class DiscordCommand {
     return message.delete(time).catch(e => {
       message.channel.send("Missing Manage Messages Role");
     });
+  }
+  get OfficialServer() {
+    return this.botClient.guilds.get(this.mainGuildData.id);
   }
 }
