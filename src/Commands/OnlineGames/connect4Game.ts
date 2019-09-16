@@ -85,8 +85,7 @@ export class Connect4 extends OnlineGames {
     //    console.log(this.args)
     while (this.GameData.onGoing) {
       try {
-        //        @ts-ignore
-        const flow = isInDm
+        isInDm
           ? await this.takeTurn(
               this.GameData.playerTurn,
               mainGameBoardMessage,
@@ -207,7 +206,7 @@ export class Connect4 extends OnlineGames {
             gameWinLoseDisplayMSG
               .setColor("#001900")
               .setDescription("the game ended in a draw!")
-              .addField("Coins adding", 2, true);
+              .addField("Coins adding", 10, true);
             break;
           default:
             gameWinLoseDisplayMSG
@@ -217,7 +216,7 @@ export class Connect4 extends OnlineGames {
                 this.gameMetaData.players[this.GameData.playerTurn - 1],
                 true
               )
-              .addField("Coins adding", 5, true);
+              .addField("Coins adding", 15, true);
         }
         await mainGameBoardMessage.edit(gameWinLoseDisplayMSG);
 
@@ -231,17 +230,19 @@ export class Connect4 extends OnlineGames {
   async RewardPlayers() {
     // console.log('Game Loot!');
     if (this.isGameADraw()) {
-      await this.rewardPlayer(2, this.gameMetaData.players[0].id, false);
-      await this.rewardPlayer(2, this.gameMetaData.players[1].id, false);
+      await this.rewardPlayer(10, this.gameMetaData.players[0].id, false);
+      await this.rewardPlayer(10, this.gameMetaData.players[1].id, false);
     } else {
       const lostIndex = this.GameData.playerTurn === 1 ? 2 : 1;
+      // winner
       await this.rewardPlayer(
-        5,
+        15,
         this.gameMetaData.players[this.GameData.playerTurn - 1].id,
         true
       );
+      // loser
       await this.rewardPlayer(
-        1,
+        5,
         this.gameMetaData.players[lostIndex - 1].id,
         false
       );

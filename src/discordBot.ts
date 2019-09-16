@@ -102,7 +102,7 @@ export class DiscordBotRun {
       }
       // check if users info is in the DB else create it
       UserMD.findOne({ userID: receivedMessage.author.id })
-        .then((userData: IUserState) => {
+        .then(async (userData: IUserState) => {
           if (!userData) {
             this.createNewUserProfile(
               receivedMessage.author,
@@ -196,36 +196,34 @@ export class DiscordBotRun {
     return message.channel.type;
   }
   async checkIfUserLeveledUp(userData: IUserState, msg: Discord.Message) {
-    await UserMD.findOne({ userID: userData.userID }).then(
-      async (userData: IUserState) => {
-        const currentLevelData = [...DiscordBotRun.LevelSystemXp].filter(
-          stage => stage.level === userData.level.current
-        );
-        // console.log(currentLevelData)
-        if (currentLevelData) {
-          if (
-            userData.level.xp >= currentLevelData[0].xp &&
-            currentLevelData[0].xp
-          ) {
-            const newLevel = ++userData.level.current;
-            const newXP =
-              userData.level.xp - (currentLevelData[0].xp as number);
-            await UserMD.findOneAndUpdate(
-              { userID: userData.userID },
-              {
-                level: {
-                  xp: newXP,
-                  current: newLevel
-                }
+    UserMD.findOne({ userID: userData.userID }).then(async userUpdatedData => {
+      const currentLevelData = [...DiscordBotRun.LevelSystemXp].filter(
+        stage => stage.level === userUpdatedData.level.current
+      );
+      // console.log(currentLevelData)
+      if (currentLevelData) {
+        if (
+          userUpdatedData.level.xp >= currentLevelData[0].xp &&
+          currentLevelData[0].xp
+        ) {
+          const newLevel = ++userUpdatedData.level.current;
+          const cryptoGained = newLevel * 1500;
+          await UserMD.findOneAndUpdate(
+            { userID: userData.userID },
+            {
+              $inc: {
+                "level.current": 1,
+                "level.xp": -(currentLevelData[0].xp as number),
+                crypto: cryptoGained
               }
-            ).exec();
-            await msg.author.send(
-              `🎉👏 Congrate you are now level ${++userData.level.current} 🎉`
-            );
-          }
+            }
+          ).exec();
+          await msg.author.send(
+            `🎉👏 Congrate you are now level ${newLevel} and got ${cryptoGained} Cryptos 🎉`
+          );
         }
       }
-    );
+    });
   }
   async createNewUserProfile(
     userDiscordInfo: Discord.User,

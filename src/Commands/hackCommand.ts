@@ -215,7 +215,11 @@ export class HackCommand extends DiscordCommand {
       ])
       .setFooter("please read the conditions before selecting");
 
-    let sentConfMSG = (await this.sendMsgViaDm(Msg)) as Discord.Message;
+    let sentConfMSG = (await this.sendMsgViaDm(
+      Msg,
+      this.msg.author,
+      false
+    )) as Discord.Message;
     await this.msg.reply("Confirmation message is sent to you via DM.");
     // waits for the reactions to be added
     await Promise.all([
@@ -401,7 +405,11 @@ export class HackCommand extends DiscordCommand {
         "If you dont have enough crypto to pay the fine your IP will be marked as outcast!"
       ])
       .setFooter("please read the conditions before selecting");
-    let sentConfMSG = (await this.sendMsgViaDm(Msg)) as Discord.Message;
+    let sentConfMSG = (await this.sendMsgViaDm(
+      Msg,
+      this.msg.author,
+      false
+    )) as Discord.Message;
     await this.msg.reply("Confirmation message is sent to you via DM.");
     // waits for the reactions to be added
     await Promise.all([

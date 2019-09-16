@@ -34,8 +34,13 @@ export abstract class DiscordCommand {
   }
   async sendMsgViaDm(
     message: Discord.RichEmbed | string,
-    user: Discord.User = this.msg.author
+    user: Discord.User = this.msg.author,
+    shouldNotifyUser: Boolean = true
   ) {
+    if (this.msg.channel.type === "text" && shouldNotifyUser)
+      this.msg.reply(
+        "Check Your Direct Messages, i sent you the information there."
+      );
     return user.send(message).catch(e => {
       this.msg.channel.send(
         new Discord.RichEmbed().setDescription(

@@ -27,11 +27,11 @@ export abstract class OnlineGames extends DiscordCommand {
   }
 
   /**
-   * Confirmation Stage:
+   * ## Confirmation Stage:
    * - Sends out a message to the channel which the initial game invite was sent.
    * - Both players must Accept by reacting with the accept emojie for the game to be registered.
    *
-   * validation:
+   * ### validation:
    * - Checks if the player is part of the database
    * - Whether or not the other players are in a game.
    * - Checks if the number of players needed for the game to start is met.
@@ -295,6 +295,7 @@ export abstract class OnlineGames extends DiscordCommand {
    * added crypto's to the player account on the database
    * @param crypto amount to add to the players accoun
    * @param playerID the players id
+   * @param won did they win or not?
    * @param guildID the guild that they are in
    */
   async rewardPlayer(
@@ -304,32 +305,34 @@ export abstract class OnlineGames extends DiscordCommand {
     guildID: string = this.msg.guild.id
   ) {
     try {
-      const rewardUpdates = won
-        ? {
-            $inc: {
-              crypto: coinsToAdd,
-              "playerStat.wins": 1,
-              "playerStat.streak": 1,
-              "level.xp": 3 * coinsToAdd
+      await UserMD.findOne({ userID }).then(async userUpdatedData => {
+        const rewardUpdates = won
+          ? {
+              $inc: {
+                crypto: coinsToAdd * userUpdatedData.level.current,
+                "playerStat.wins": 1,
+                "playerStat.streak": 1,
+                "level.xp": 3 * coinsToAdd
+              }
             }
-          }
-        : {
-            "playerStat.streak": 0,
-            $inc: {
-              crypto: coinsToAdd,
-              "playerStat.loses": 1,
-              "level.xp": 3 * coinsToAdd
-            }
-          };
+          : {
+              "playerStat.streak": 0,
+              $inc: {
+                crypto: coinsToAdd * userUpdatedData.level.current,
+                "playerStat.loses": 1,
+                "level.xp": 3 * coinsToAdd
+              }
+            };
 
-      await UserMD.findOneAndUpdate(
-        {
-          userID
-        },
-        rewardUpdates
-      ).exec();
-      // console.log(E);
-      // console.log('looting');
+        await UserMD.findOneAndUpdate(
+          {
+            userID
+          },
+          rewardUpdates
+        ).exec();
+        // console.log(E);
+        // console.log('looting');
+      });
     } catch (e) {
       console.log(e);
     }
