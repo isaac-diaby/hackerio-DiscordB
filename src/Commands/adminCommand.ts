@@ -45,7 +45,7 @@ export class AdministratorCommand extends DiscordCommand {
 
   async notiflyUsers() {
     let argumentProps: {
-      conditions: {};
+      conditions?: IUserState;
       messagedata: {
         title: string;
         msg: string;
@@ -78,7 +78,12 @@ export class AdministratorCommand extends DiscordCommand {
 
     // allows me to target users.
     await UserMD.find(
-      argumentProps.conditions ? argumentProps.conditions : {}
+      argumentProps.conditions
+        ? {
+            ...argumentProps.conditions,
+            "playerStat.opt_in": true
+          }
+        : { "playerStat.opt_in": true }
     ).then(async users => {
       let playersSuccessullyReached = 0;
       let playersFailedReached = 0;

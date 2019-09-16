@@ -74,7 +74,7 @@ export class DeleteCommand extends DiscordCommand {
       .then(reactionResults => {
         // console.log(reactionResults.get(acceptEmoji));
         if (
-          reactionResults.get(acceptEmoji) !== null ||
+          reactionResults.get(acceptEmoji) !== null &&
           reactionResults.get(acceptEmoji).count - 1 === 1
         ) {
           UserMD.findOneAndDelete({

@@ -35,7 +35,8 @@ const userSchema = new Schema({
     wins: { type: Number, default: 0 },
     loses: { type: Number, default: 0 },
     streak: { type: Number, default: 0 },
-    joinedDate: { type: Date, default: Date.now }
+    joinedDate: { type: Date, default: Date.now },
+    opt_in: { type: Boolean, default: false }
   },
   crypto: { type: Number, default: 1500 },
   level: {
@@ -83,6 +84,7 @@ export interface IUserState {
   crypto: number;
   playerStat: {
     elite: Boolean;
+    opt_in: Boolean;
     eliteExpireDate: Date;
     outcast: Boolean;
     wins: number;
@@ -91,7 +93,7 @@ export interface IUserState {
     joinedDate: Date;
   };
 }
-export interface IUserStateDoc extends Document, IUserState {}
+export interface IUserStateDoc extends IUserState, Document {}
 
 // all instances will have acces to this when doing UserMD.findOne().byUserID('usersID')
 userSchema.statics.byUserID = function(userID: string, cb: void) {

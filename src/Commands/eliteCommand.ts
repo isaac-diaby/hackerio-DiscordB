@@ -93,4 +93,38 @@ export class EliteCommand extends DiscordCommand {
       }
     ).then(d => user.send(Msg));
   }
+
+  static checkIfStillElite(
+    user: Discord.User,
+    userData: IUserState,
+    botClient: Discord.Client
+  ) {
+    const isUserInOfficialServer = botClient.guilds
+      .get("566982444822036500")
+      .members.get(user.id);
+    // @ts-ignore
+    if (userData.playerStat.eliteExpireDate <= Date.now().valueOf()) {
+      // membership expired
+      isUserInOfficialServer
+        .removeRole("605180133535645745", "Membership has expired")
+        .catch(e =>
+          console.log("tried to remove elite role from someone high up")
+        );
+      return EliteCommand.altEliteStatus(user.id, false, user);
+    }
+    if (isUserInOfficialServer !== undefined) {
+      // HackerIO Elite == 605180133535645745
+      if (!isUserInOfficialServer.roles.has("605180133535645745")) {
+        isUserInOfficialServer
+          .removeRole("605180133535645745", "Membership has expired")
+          .catch(e =>
+            console.log("tried to remove elite role from someone high up")
+          );
+        return EliteCommand.altEliteStatus(user.id, false, user);
+      }
+    } else {
+      // this means they left the support server. not allowed if your elite!
+      return EliteCommand.altEliteStatus(user.id, false, user);
+    }
+  }
 }

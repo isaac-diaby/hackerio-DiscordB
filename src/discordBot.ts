@@ -2,6 +2,7 @@ import * as Discord from "discord.js";
 import { GameCommandsOBJ } from "./Commands";
 import { UserMD, IUserState, uuidv4 } from "./Models/userState";
 import { EliteCommand } from "./Commands/eliteCommand";
+import { RigisterUser } from "./Commands/registerUser";
 // @ts-ignore
 import blapi from "blapi";
 export class DiscordBotRun {
@@ -49,7 +50,7 @@ export class DiscordBotRun {
     this.botClient.login(process.env.BOT_AUTHTOKEN);
     this.botClient.on("ready", () => {
       this.botClient.user.setActivity(
-        `Hackers |  ${process.env.BOT_PREFIX}help | v${
+        `Hackers |  ${process.env.BOT_PREFIX}register | v${
           process.env.BOT_VERSION
         }`,
         { type: "WATCHING" }
@@ -100,14 +101,15 @@ export class DiscordBotRun {
         );
         return;
       }
-      // check if users info is in the DB else create it
+      // check if users info is A in the DB else create it
       UserMD.findOne({ userID: receivedMessage.author.id })
         .then(async (userData: IUserState) => {
           if (!userData) {
-            this.createNewUserProfile(
-              receivedMessage.author,
-              receivedMessage.channel
-            );
+            if (
+              receivedMessage.content === `${process.env.BOT_PREFIX}register`
+            ) {
+              new RigisterUser(receivedMessage.author, receivedMessage.channel);
+            }
             return;
           }
           if (!userData.online)
@@ -138,7 +140,11 @@ export class DiscordBotRun {
           }
 
           if (userData.playerStat.elite)
-            this.checkIfStillElite(receivedMessage.author, userData);
+            EliteCommand.checkIfStillElite(
+              receivedMessage.author,
+              userData,
+              this.botClient
+            );
           // Parse the text to a command format
           let commands = receivedMessage.content
             .toLowerCase()
@@ -172,6 +178,7 @@ export class DiscordBotRun {
         .catch(e => console.log(e));
     });
   }
+
   // Set user to online/offline in DB
   setUserToOnline({ userID, status }: { userID: string; status: boolean }) {
     UserMD.findOneAndUpdate({ userID }, { $set: { online: status } })
@@ -224,104 +231,5 @@ export class DiscordBotRun {
         }
       }
     });
-  }
-  async createNewUserProfile(
-    userDiscordInfo: Discord.User,
-    discordChannel:
-      | Discord.TextChannel
-      | Discord.DMChannel
-      | Discord.GroupDMChannel
-  ) {
-    const newUser = new UserMD({
-      userID: userDiscordInfo.id,
-      ip: uuidv4()
-    });
-    newUser
-      .save()
-      .then(data => {
-        // new user created success message
-        const successfulNewAccountMSG = new Discord.RichEmbed()
-          .setColor("#60BE82")
-          .setAuthor(`${userDiscordInfo.tag}`)
-          .setTitle("New Profile Created!")
-          .setDescription(
-            `Welcome, I see that this is your first time. Type ${
-              process.env.BOT_PREFIX
-            }help FOR HELP and good luck on your adventure. (Discord DM based game)`
-          )
-          .addField("discordbots.org", "http://bit.ly/HIOdiscordBots")
-          .addField(
-            "Join The Official Serverr",
-            "http://bit.ly/CGBofficialServer"
-          )
-          .addField(
-            "README: DISCLAIMER:",
-            "HackerIO is an online educational game, IS JUST A GAME. DONT SHARE IP (you will be foolish to!)"
-          )
-          .addField("New Players", [
-            `0. Your account has been created, Please re-enter a command you want to execute`,
-            `1. You execute commands with the following prefix: ${
-              process.env.BOT_PREFIX
-            }`,
-            `2. Execute ${
-              process.env.BOT_PREFIX
-            }help - this is all the in-game commands`,
-            `3. Execute ${
-              process.env.BOT_PREFIX
-            }stat - this shows information about you! (don't share your Ip cuz you can't change it (until v3.0)!`,
-            `4. Execute ${
-              process.env.BOT_PREFIX
-            }learn - get to know some of the commands that will help you get a better chance in your hacks. (very userful!)`,
-            `4. Execute ${
-              process.env.BOT_PREFIX
-            }hack -u -r - this is your first random user hack, good luck!`,
-            "5. your all set to EXPLORE THE ENDLESS HACKING, EVENTS and  BETTING GAMES"
-          ])
-          .setFooter(
-            "For more features and exclusive bonuses become a Donater!: http://bit.ly/CGBdonate"
-          );
-        discordChannel.send(successfulNewAccountMSG);
-      })
-      .catch(e => {
-        // new user created fail message
-        const FailedNewUserMSG = new Discord.RichEmbed()
-          .setTitle("New User Error!")
-          .setColor("#F44336")
-          .setAuthor(`${userDiscordInfo.tag}`)
-          .setDescription(
-            `There was an error creating ${userDiscordInfo} account on the server`
-          );
-        discordChannel.send(FailedNewUserMSG);
-        // discordChannel.send(e)
-      });
-  }
-  checkIfStillElite(user: Discord.User, userData: IUserState) {
-    const isUserInOfficialServer = this.botClient.guilds
-      .get("566982444822036500")
-      .members.get(user.id);
-    // @ts-ignore
-    if (userData.playerStat.eliteExpireDate <= Date.now().valueOf()) {
-      // membership expired
-      isUserInOfficialServer
-        .removeRole("605180133535645745", "Membership has expired")
-        .catch(e =>
-          console.log("tried to remove elite role from someone high up")
-        );
-      return EliteCommand.altEliteStatus(user.id, false, user);
-    }
-    if (isUserInOfficialServer !== undefined) {
-      // HackerIO Elite == 605180133535645745
-      if (!isUserInOfficialServer.roles.has("605180133535645745")) {
-        isUserInOfficialServer
-          .removeRole("605180133535645745", "Membership has expired")
-          .catch(e =>
-            console.log("tried to remove elite role from someone high up")
-          );
-        return EliteCommand.altEliteStatus(user.id, false, user);
-      }
-    } else {
-      // this means they left the support server. not allowed if your elite!
-      return EliteCommand.altEliteStatus(user.id, false, user);
-    }
   }
 }

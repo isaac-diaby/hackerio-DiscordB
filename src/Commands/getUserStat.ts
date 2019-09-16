@@ -32,7 +32,8 @@ export class UserStatsCommand extends DiscordCommand {
               }`,
               true
             )
-            .addField("Crypto", `${userData.crypto}`)
+            .addField("Crypto", `${userData.crypto}`, true)
+            .addField("Opt-in Status", `${userData.playerStat.opt_in}`, true)
             .addField("Elite", `${userData.playerStat.elite}`, true);
           // add a field that allows Elite users see when thier status expires
           if (userData.playerStat.elite)
