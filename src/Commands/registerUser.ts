@@ -1,5 +1,5 @@
 import * as Discord from "discord.js";
-import { IUserState, UserMD, uuidv4 } from "../Models/userState";
+import { UserMD, uuidv4 } from "../Models/userState";
 export class RigisterUser {
   acceptEmoji = `🔵`;
   rejectEmoji = `🔴`;
@@ -33,20 +33,20 @@ export class RigisterUser {
       .setDescription(
         "You are about to create a HackerIO account, by doing so, you are accepting the following terms. Are you sure you Want create an account?"
       )
-      .addField("1.", "Allow HackerIO to store your userID in it's database")
+      .addField("1.", "Allow HackerIO to store your userID in it's database.")
       .addField(
         "2.",
-        "Allow HackerIO to send Direct Messages you, you can opt-in or out of news/events/challenges at any time."
+        "Allow HackerIO to send you Direct Messages, you can opt-in or out of news/events/challenges at any time."
       )
       .addField(
         "3.",
-        "Allow monitization of in game perks such as 'Elite Status' with in reason OFC"
+        "Allow monitization of in game perks such as 'Elite Status'"
       )
       .addField(
         "4.",
-        "If you ever change your mind there is a delete account command built it. Lets hope it doesnt get to that. "
+        "If you ever change your mind there is a delete account command built it. Lets hope it doesnt get to that."
       )
-      .setFooter(`please confirm this action by reacting ${this.acceptEmoji}`);
+      .setFooter(`Please confirm this action by reacting ${this.acceptEmoji}`);
 
     let sentConfMSG = (await this.channel.send(
       ConfirmationMSG
@@ -107,10 +107,7 @@ export class RigisterUser {
         "Challenges",
         "We will message you about any challenges that will give out huge prizes."
       )
-      .addField(
-        "Events",
-        "Events range from cryptography, Forensic, and Exploits. (Include Prizes Too)"
-      )
+      .addField("Events", "Range from cryptography, Forensic, and Exploits.")
       .setFooter(`please confirm this action by reacting ${this.acceptEmoji}`);
 
     let sentConfMSG = (await this.channel.send(
@@ -177,11 +174,11 @@ export class RigisterUser {
           .setAuthor(`${this.user.tag}`)
           .setTitle("New Profile Created!")
           .setDescription(
-            `Welcome, I see that this is your first time. Type ${
+            `Welcome Hacker, We are excited to have you as a member, Type ${
               process.env.BOT_PREFIX
-            }help FOR HELP and good luck on your adventure. (Discord DM based game)`
+            }help FOR HELP and good luck on your adventure. (Discord Direct Message based game)`
           )
-          .addField("discordbots.org", "http://bit.ly/HIOdiscordBots")
+          // .addField("discordbots.org", "http://bit.ly/HIOdiscordBots")
           .addField(
             "Join The Official Serverr",
             "http://bit.ly/CGBofficialServer"
@@ -191,7 +188,6 @@ export class RigisterUser {
             "HackerIO is an online educational game, IS JUST A GAME. DONT SHARE IP (you will be foolish to!)"
           )
           .addField("New Players", [
-            `0. Your account has been created, Please re-enter a command you want to execute`,
             `1. You execute commands with the following prefix: ${
               process.env.BOT_PREFIX
             }`,
@@ -200,14 +196,14 @@ export class RigisterUser {
             }help - this is all the in-game commands`,
             `3. Execute ${
               process.env.BOT_PREFIX
-            }stat - this shows information about you! (don't share your Ip cuz you can't change it (until v3.0)!`,
+            }stat - this shows information about you! (don't share your Ip cuz you can't change it yet!`,
             `4. Execute ${
               process.env.BOT_PREFIX
             }learn - get to know some of the commands that will help you get a better chance in your hacks. (very userful!)`,
             `4. Execute ${
               process.env.BOT_PREFIX
-            }hack -u -r - this is your first random user hack, good luck!`,
-            "5. your all set to EXPLORE THE ENDLESS HACKING, EVENTS and  BETTING GAMES"
+            }hack -u -r - This will be your first random user hack, good luck!`,
+            "5. your all set to explore, hack, take part in events and play mini-games."
           ])
           .setFooter(
             "For more features and exclusive bonuses become a Donater!: http://bit.ly/CGBdonate"

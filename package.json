@@ -1,6 +1,6 @@
 {
   "name": "hackerio-discord",
-  "version": "1.3.1",
+  "version": "1.4.0",
   "description": "Hacker.io is an online game",
   "main": "src/index.ts",
   "scripts": {
@@ -28,13 +28,7 @@
     "type": "git",
     "url": "git+ssh://git@github.com/isaac-diaby/hackerio-DiscordB.git"
   },
-  "keywords": [
-    "hackerio",
-    "discord",
-    "bot",
-    "online",
-    "game"
-  ],
+  "keywords": ["hackerio", "discord", "bot", "online", "game"],
   "private": true,
   "author": "isaac-diaby <isaac.diaby.code@gmail.com>",
   "license": "ISC",

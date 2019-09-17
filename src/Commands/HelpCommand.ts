@@ -19,14 +19,16 @@ export class HelpCommand extends DiscordCommand {
   getACommandInfo() {
     const helpMessage = new Discord.RichEmbed()
       .setColor("#D3D3D3")
-      .setTitle("Help Command");
+      .setTitle(
+        "Help Command Keys: [name = default] = Optional, <name = default> = Required"
+      );
     const commandMeta = GameCommandsOBJ[this.args[0]];
     if (commandMeta) {
       helpMessage
-        .addField("Primary", this.args[0], true)
-        .addField("Description", commandMeta.description!, true);
+        .addField("Primary", this.args[0])
+        .addField("Description", commandMeta.description!);
       if (commandMeta.args)
-        helpMessage.addField("Arguments", commandMeta.args!, true);
+        helpMessage.addField("Arguments", commandMeta.args!);
     } else {
       helpMessage.setDescription("Couldn't find that command");
     }
@@ -92,22 +94,23 @@ export class HelpCommand extends DiscordCommand {
     const newSplitArraySelected = this.splitHelp(commands)[page - 1];
     // console.log(newSplitArraySelected)
     const Msg = new Discord.RichEmbed()
-      .setTitle("Help Commands")
+      .setTitle(
+        "Help Command Keys: [name = default] = Optional, <name = default> = Required"
+      )
       .setFooter(`Page ${page} of ${newSplitArrayFull.length}`);
 
     let logIndex = page - 1 !== 0 ? (page - 1) * 5 : 0;
     newSplitArraySelected.forEach(command => {
       // console.log(command)
-      Msg.addField("Primary", command[0], true)
+      Msg.addField("Primary", command[0])
         // @ts-ignore
-        .addField("Description", command[1].description!, true);
+        .addField("Description", command[1].description!);
       // @ts-ignore
       command[1].args
         ? Msg.addField(
             "Arguments",
             // @ts-ignore
-            command[1].args!,
-            true
+            command[1].args!
           )
         : Msg.addBlankField(true);
       Msg.addBlankField();

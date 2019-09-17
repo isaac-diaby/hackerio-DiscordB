@@ -726,6 +726,7 @@ export class LearnCommand extends DiscordCommand {
   openLearningBook(page: number) {
     //@ts-ignore
     this.msg.channel.send(this.GetPage(page)).then((m: Discord.Message) => {
+      m.delete(60000);
       m.react("👈").then(mr => {
         m.react("👉");
         const backWordsFilter = (r: Discord.MessageReaction, u: Discord.User) =>

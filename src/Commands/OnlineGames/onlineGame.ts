@@ -131,7 +131,7 @@ export abstract class OnlineGames extends DiscordCommand {
       (reaction: Discord.MessageReaction, user: Discord.GuildMember) =>
         allowedEmo.includes(reaction.emoji.name) &&
         this.gameMetaData.playerIDs.includes(user.id),
-      { time: 6000 } // waits for 6ms => 6 seconds
+      { time: 6000 } // 6 seconds
     )
       .then(reactionResults => {
         let filteredUsersAcp;

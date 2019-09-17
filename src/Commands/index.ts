@@ -11,6 +11,7 @@ import { LeaveGameCommand } from "./leaveCommand";
 import { DeleteCommand } from "./deleteCommand";
 import { SuggestCommand } from "./suggestCommand";
 import { AdministratorCommand } from "./adminCommand";
+import { OptCommand } from "./opt-inCommand";
 
 export interface CommandObj {
   execute: any;
@@ -23,12 +24,12 @@ export const GameCommandsOBJ: { [key: string]: CommandObj } = {
   help: {
     execute: HelpCommand,
     description: "Prints out help.",
-    args: ["<command> = command"]
+    args: ["[Command] = command"]
   },
   suggest: {
     execute: SuggestCommand,
-    description: "suggest new updates/improvements and report bugs",
-    args: ["<mode> = update | bug", "<suggestion message>"]
+    description: "Suggest new updates/improvements or report bugs",
+    args: ["<Mode> = update or bug", "<suggestion = Your message >"]
   },
   stat: {
     execute: UserStatsCommand,
@@ -37,58 +38,77 @@ export const GameCommandsOBJ: { [key: string]: CommandObj } = {
   log: {
     execute: LogCommand,
     description: "Displays the user's log",
-    args: ["<mode> = (-b = brief) | ( -d = delete) | ( -o = open )"]
+    args: [
+      "[Mode = -b]",
+      "-b = brief of all logs",
+      "-d = delete a log (all)",
+      "-o = open full log"
+    ]
+  },
+  opt: {
+    execute: OptCommand,
+    description: "Join or exit the news updates and events"
   },
   hack: {
     execute: HackCommand,
     description: "This is where all the hacking magic happens! 🎇",
     args: [
-      "<mode> = -b | -u",
-      "-b <bank> = city | nation | government | pentagon | illuminati",
-      "-u <ip> = ip | ( -r = random ) "
+      "<Mode>",
+      "-b = Target a bank = city | nation | government | pentagon | illuminati",
+      "-u <method = ip>",
+      "ip = A valid ip to hack ",
+      "-r = Hack a random ip "
     ]
   },
   learn: {
     execute: LearnCommand,
     description:
       "Read and Learn to become a better hacker. 😁 Did you think it was was going to be easy?",
-    args: ["<page = 0 | command> = valid page number or a script command"]
+    args: [
+      "[Page = 0 or command]",
+      "number = Valid page number",
+      "command = Script command to look up"
+    ]
   },
   banks: {
     execute: BanksCommand,
     description: "Shows you the banks that you are able to interact with.",
-    args: ["<mode = ls> = ls | bank name"]
+    args: ["[Mode = ls]", "ls = List all availble banks"]
   },
   outcast: {
     execute: OutCastCommand,
     description:
       "Out cast players (OCP) disadvantages and how to get off the list ",
-    args: ["<mode> = (-p = pay to get off the list)"]
+    args: ["[Mode]", "-p = Pay to get off the list"]
   },
   elite: {
     execute: EliteCommand,
     description: "Elite players (EP) advantages and how to get in the list⭐",
-    args: ["<mode> = (-j = steps to get become an elite)"]
+    args: ["[Mode]", "-j = Join the elite"]
   },
   connect4: {
     execute: Connect4,
     description: "Play Connect 4 with a friend",
-    args: ["<@mention> <channel = guild> = (channel = guild | dm)"]
+    args: [
+      "<@Mention>",
+      "tag a player to play against",
+      "[Channel = guild]",
+      "guild | dm"
+    ]
   },
   "!leave": {
     execute: LeaveGameCommand,
     description:
-      "WARNING: removes yourself from the current game that you are in",
-    args: ["<mode = game>"]
+      "WARNING: R]0emoves yourself from the current game that you are in",
+    args: ["[Mode = game]", "game = Leave the game that your currently in"]
   },
   "!delete": {
     execute: DeleteCommand,
     description: "WARNING: This Command Forever Deletes!",
-    args: ["<mode> = account"]
+    args: ["<Mode>", "account = Delete your account"]
   },
   "!admin": {
     execute: AdministratorCommand,
-    description: "Administrators only ",
-    args: []
+    description: "Administrators only"
   }
 };
