@@ -1,9 +1,11 @@
 import * as Discord from "discord.js";
-import { UserMD, uuidv4 } from "../Models/userState";
+import { UserMD, uuidv4 } from "../../Models/userState";
 export class RigisterUser {
   acceptEmoji = `🔵`;
   rejectEmoji = `🔴`;
-  // user: Discord.User;
+
+  responseTime = 120000; // 1 minutes
+
   // channel: Discord.TextChannel | Discord.DMChannel | Discord.GroupDMChannel
   constructor(
     public user: Discord.User,
@@ -73,10 +75,7 @@ export class RigisterUser {
     };
 
     return sentConfMSG
-      .awaitReactions(
-        filter,
-        { max: 1, time: 20000 } // 20 seconds
-      )
+      .awaitReactions(filter, { max: 1, time: this.responseTime })
       .then(reactionResults => {
         // console.log(reactionResults.get(acceptEmoji));
         if (
@@ -135,10 +134,7 @@ export class RigisterUser {
     };
 
     return sentConfMSG
-      .awaitReactions(
-        filter,
-        { max: 1, time: 20000 } // 20 seconds
-      )
+      .awaitReactions(filter, { max: 1, time: this.responseTime })
       .then(reactionResults => {
         // console.log(reactionResults.get(acceptEmoji));
         if (

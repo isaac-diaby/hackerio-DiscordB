@@ -1,7 +1,6 @@
 import * as Discord from "discord.js";
-import { DiscordCommand } from "./DiscordCommand";
-import { IUserState, UserMD } from "../Models/userState";
-import { stat } from "fs";
+import { DiscordCommand } from "../DiscordCommand";
+import { IUserState, UserMD } from "../../Models/userState";
 
 export class AdministratorCommand extends DiscordCommand {
   constructor(

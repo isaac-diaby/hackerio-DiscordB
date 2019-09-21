@@ -1,8 +1,9 @@
 import * as Discord from "discord.js";
-import { DiscordCommand } from "./DiscordCommand";
-import { GameCommandsOBJ, CommandObj } from ".";
+import { DiscordCommand } from "../DiscordCommand";
+import { GameCommandsOBJ, CommandObj } from "..";
 
 export class HelpCommand extends DiscordCommand {
+  responseTime = 120000; // 2 minutes
   constructor(
     client: Discord.Client,
     message: Discord.Message,
@@ -16,6 +17,7 @@ export class HelpCommand extends DiscordCommand {
       this.getHelpAll(GameCommandsOBJ);
     }
   }
+
   getACommandInfo() {
     const helpMessage = new Discord.RichEmbed()
       .setColor("#D3D3D3")
@@ -30,12 +32,12 @@ export class HelpCommand extends DiscordCommand {
       if (commandMeta.args)
         helpMessage.addField("Arguments", commandMeta.args!);
     } else {
-      helpMessage.setDescription("Couldn't find that command");
+      helpMessage
+        .setTitle("Help Command: ERROR")
+        .setDescription("Couldn't find that command")
+        .setColor("#F44336");
     }
-    this.msg.channel
-      .send(helpMessage)
-      // @ts-ignore
-      .then((m: Discord.Message) => m.delete(60000));
+    this.msg.channel.send(helpMessage);
   }
   getHelpAll(GameCommandsOBJ: { [key: string]: CommandObj }) {
     let page = 1;
@@ -43,7 +45,7 @@ export class HelpCommand extends DiscordCommand {
     this.msg.channel.send(this.GetHelpPage(page, GameCommandsOBJ)).then(
       //@ts-ignore
       (m: Discord.Message) => {
-        m.delete(60000);
+        m.delete(this.responseTime);
         m.react("👈").then(mr => {
           m.react("👉");
           const backWordsFilter = (
@@ -56,18 +58,20 @@ export class HelpCommand extends DiscordCommand {
           ) => r.emoji.name === "👉" && u.id === this.msg.author.id;
 
           const backWords = m.createReactionCollector(backWordsFilter, {
-            time: 60000
+            time: this.responseTime
           });
           const forWords = m.createReactionCollector(forWordsFilter, {
-            time: 60000
+            time: this.responseTime
           });
 
-          backWords.on("collect", r => {
+          backWords.on("collect", async mr => {
+            await mr.remove(this.msg.author).catch(e => {});
             if (page === 1) return;
             page--;
             m.edit(this.GetHelpPage(page, GameCommandsOBJ));
           });
-          forWords.on("collect", r => {
+          forWords.on("collect", async mr => {
+            await mr.remove(this.msg.author).catch(e => {});
             if (page === this.splitHelp(GameCommandsOBJ).length) return;
             page++;
             m.edit(this.GetHelpPage(page, GameCommandsOBJ));
@@ -77,13 +81,14 @@ export class HelpCommand extends DiscordCommand {
     );
   }
   splitHelp(commands: { [key: string]: CommandObj }) {
-    const splitBy = 5;
+    const splitBy = 5; // number command swill be displayed on each page
     var toArray = Object.keys(commands).map(function(key) {
       return [key, commands[key]];
     });
 
     let newSplitArray = [];
     for (let i = 0; i < toArray.length; i += splitBy) {
+      // add the sliced section as an array to the new array
       newSplitArray.push(toArray.slice(i, i + splitBy));
     }
     // console.log(newSplitArray)
@@ -102,7 +107,8 @@ export class HelpCommand extends DiscordCommand {
     let logIndex = page - 1 !== 0 ? (page - 1) * 5 : 0;
     newSplitArraySelected.forEach(command => {
       // console.log(command)
-      Msg.addField("Primary", command[0])
+      Msg.addField("Primary", command[0]) // the key
+        // command[1] is the command info
         // @ts-ignore
         .addField("Description", command[1].description!);
       // @ts-ignore
@@ -113,6 +119,8 @@ export class HelpCommand extends DiscordCommand {
             command[1].args!
           )
         : Msg.addBlankField(true);
+
+      //TODO: add a example section
       Msg.addBlankField();
       logIndex = logIndex + 1;
     });

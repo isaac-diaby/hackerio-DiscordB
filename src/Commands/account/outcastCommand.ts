@@ -1,6 +1,6 @@
 import * as Discord from "discord.js";
-import { DiscordCommand } from "./DiscordCommand";
-import { IUserState, UserMD } from "../Models/userState";
+import { DiscordCommand } from "../DiscordCommand";
+import { IUserState, UserMD } from "../../Models/userState";
 
 export class OutCastCommand extends DiscordCommand {
   acceptEmoji = `🔵`;

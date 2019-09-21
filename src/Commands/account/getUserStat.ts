@@ -1,7 +1,7 @@
 import * as Discord from "discord.js";
-import { DiscordCommand } from "./DiscordCommand";
-import { IUserState, UserMD } from "../Models/userState";
-import { DiscordBotRun } from "../discordBot";
+import { DiscordCommand } from "../DiscordCommand";
+import { IUserState, UserMD } from "../../Models/userState";
+import { DiscordBotRun } from "../../discordBot";
 
 export class UserStatsCommand extends DiscordCommand {
   userData: IUserState;
@@ -73,5 +73,56 @@ export class UserStatsCommand extends DiscordCommand {
           .setDescription("No user Found in DB");
         this.sendMsgViaDm(Msg);
       });
+  }
+  /**
+   * Set user to online/offline in DB
+   *  */
+
+  static setUserToOnline({
+    userID,
+    status
+  }: {
+    userID: string;
+    status: boolean;
+  }) {
+    UserMD.findOneAndUpdate({ userID }, { $set: { online: status } })
+      .exec()
+      .catch(e => console.log(e));
+  }
+
+  static async checkIfUserLeveledUp(
+    userData: IUserState,
+    msg: Discord.Message
+  ) {
+    const currentLevelData = [...DiscordBotRun.LevelSystemXp].filter(
+      stage => stage.level === userData.level.current
+    );
+    // @ts-ignore
+    if (currentLevelData[0] === "MAX") return;
+    UserMD.findOne({ userID: userData.userID }).then(async userUpdatedData => {
+      // console.log(currentLevelData)
+      if (currentLevelData) {
+        if (
+          userUpdatedData.level.xp >= currentLevelData[0].xp &&
+          currentLevelData[0].xp
+        ) {
+          const newLevel = ++userUpdatedData.level.current;
+          const cryptoGained = newLevel * 1500;
+          await UserMD.findOneAndUpdate(
+            { userID: userData.userID },
+            {
+              $inc: {
+                "level.current": 1,
+                "level.xp": -(currentLevelData[0].xp as number),
+                crypto: cryptoGained
+              }
+            }
+          ).exec();
+          await msg.author.send(
+            `🎉👏 Congrate you are now level ${newLevel} and got ${cryptoGained} Cryptos 🎉`
+          );
+        }
+      }
+    });
   }
 }

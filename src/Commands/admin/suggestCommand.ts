@@ -1,5 +1,5 @@
 import * as Discord from "discord.js";
-import { DiscordCommand } from "./DiscordCommand";
+import { DiscordCommand } from "../DiscordCommand";
 // @ts-ignore
 import request from "request";
 

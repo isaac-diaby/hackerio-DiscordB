@@ -1,8 +1,8 @@
 import * as Discord from "discord.js";
-import { DiscordCommand } from "./DiscordCommand";
-import { IUserState, UserMD, Ilog } from "../Models/userState";
-import { BanksCommand, IbankMeta } from "./banksCommand";
-import { LearnCommand } from "./learnHackCommands";
+import { DiscordCommand } from "../DiscordCommand";
+import { IUserState, UserMD, Ilog } from "../../Models/userState";
+import { BanksCommand, IbankMeta } from "../guide/banksCommand";
+import { TypeOfHacks } from "./typeOfHacks";
 
 export interface Ieffects {
   winChanceAlt: number;
@@ -20,11 +20,14 @@ export class HackCommand extends DiscordCommand {
     UserMD.findOne({ userID: message.author.id }).then(
       async (userData: IUserState) => {
         switch (this.args[0]) {
-          case "-b":
+          case "-b" || "-bank":
             await this.hackBankInit(userData);
             break;
-          case "-u":
+          case "-u" || "-user":
             await this.hackUserInit(userData);
+            break;
+          case "-t":
+            await this.hackTypingPercentage(1, 1);
             break;
           default:
             await message.channel.send("hack (-b | -u)");
@@ -184,7 +187,7 @@ export class HackCommand extends DiscordCommand {
   async hackUserConfirmationStage(enemyData: IUserState, userData: IUserState) {
     let difficulty;
     if (enemyData.level.current > 133) {
-      difficulty = "144+";
+      difficulty = "144 - 200";
     } else if (enemyData.level.current > 66) {
       difficulty = "67 - 133";
     } else {
@@ -213,7 +216,7 @@ export class HackCommand extends DiscordCommand {
       .addField("Note Risk", [
         "If you fail your hack the enemy player will have your ip in their logs,they can attemp to hack you back!"
       ])
-      .setFooter("please read the conditions before selecting");
+      .setFooter("please read the conditions before selecting.");
 
     let sentConfMSG = (await this.sendMsgViaDm(
       Msg,
@@ -533,45 +536,18 @@ export class HackCommand extends DiscordCommand {
       "Starting Hacking Session"
     )) as Discord.Message;
     for (let i = 1; i <= rounds; i++) {
-      const randomDifficulty = Math.floor(Math.random() * difficulty);
-      const randomQuestionIndex = Math.floor(
-        Math.random() * LearnCommand.HACKER_SCRIPTS[randomDifficulty].length
-      );
-
       // TODO: add different type of hack
       const Msg = new Discord.RichEmbed()
         .setColor("#551A8B")
         .setTitle(`Commands left ${i}/${rounds}`)
-        .setDescription("Type the command that does the following.")
-        .addField("Correct", CorrentAnswers)
-        .addField(
-          "Program Platform",
-          LearnCommand.HACKER_SCRIPTS[randomDifficulty][randomQuestionIndex]
-            .program
-        )
-        .addField(
-          "What Command Does this:",
-          LearnCommand.HACKER_SCRIPTS[randomDifficulty][randomQuestionIndex]
-            .description
-        )
-        .addField(">", "...")
-        .setFooter("If You dont know the answer just send an guest to skip");
-      await questionMsg.edit(Msg);
-      await questionMsg.channel
-        .awaitMessages(
-          (m: Discord.Message) => m.author.id === this.msg.author.id, //m.content == HackCommand.HACKER_SCRIPTS[randomDifficulty][randomQuestionIndex].primaryCmd &&
-          { max: 1, time: 15000 }
-        )
-        .then(
-          c =>
-            (CorrentAnswers +=
-              c.first().content ===
-              LearnCommand.HACKER_SCRIPTS[randomDifficulty][randomQuestionIndex]
-                .primaryCmd
-                ? 1
-                : 0)
-        )
-        .catch(c => {});
+        .addField("Correct", CorrentAnswers);
+      const hackingTypes = await new TypeOfHacks(
+        Msg,
+        questionMsg,
+        this.msg.author,
+        difficulty
+      );
+      CorrentAnswers += (await hackingTypes.randomHackType()) ? 1 : 0;
     }
     const percentage = Math.round((CorrentAnswers / rounds) * 100) / 100;
     questionMsg.delete(60000);

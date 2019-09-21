@@ -1,17 +1,18 @@
-import { HelpCommand } from "./HelpCommand";
-import { UserStatsCommand } from "./getUserStat";
-import { BanksCommand } from "./banksCommand";
-import { HackCommand } from "./hackCommand";
-import { LogCommand } from "./logCommand";
-import { LearnCommand } from "./learnHackCommands";
-import { OutCastCommand } from "./outcastCommand";
-import { EliteCommand } from "./eliteCommand";
+import { HelpCommand } from "./guide/HelpCommand";
+import { UserStatsCommand } from "./account/getUserStat";
+import { BanksCommand } from "./guide/banksCommand";
+import { HackCommand } from "./hacking/hackCommand";
+import { LogCommand } from "./account/logCommand";
+import { LearnCommand } from "./guide/learnHackCommands";
+import { OutCastCommand } from "./account/outcastCommand";
+import { EliteCommand } from "./account/eliteCommand";
 import { Connect4 } from "./OnlineGames/connect4Game";
-import { LeaveGameCommand } from "./leaveCommand";
-import { DeleteCommand } from "./deleteCommand";
-import { SuggestCommand } from "./suggestCommand";
-import { AdministratorCommand } from "./adminCommand";
-import { OptCommand } from "./opt-inCommand";
+import { LeaveGameCommand } from "./account/leaveCommand";
+import { DeleteCommand } from "./account/deleteCommand";
+import { SuggestCommand } from "./admin/suggestCommand";
+import { AdministratorCommand } from "./admin/adminCommand";
+import { OptCommand } from "./account/opt-inCommand";
+import { DailyRewardCommand } from "./daily/dailyRewardCommand";
 
 export interface CommandObj {
   execute: any;
@@ -30,6 +31,10 @@ export const GameCommandsOBJ: { [key: string]: CommandObj } = {
     execute: SuggestCommand,
     description: "Suggest new updates/improvements or report bugs",
     args: ["<Mode> = update or bug", "<suggestion = Your message >"]
+  },
+  daily: {
+    execute: DailyRewardCommand,
+    description: "Daily reward"
   },
   stat: {
     execute: UserStatsCommand,

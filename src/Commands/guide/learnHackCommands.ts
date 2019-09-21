@@ -1,5 +1,5 @@
 import * as Discord from "discord.js";
-import { DiscordCommand } from "./DiscordCommand";
+import { DiscordCommand } from "../DiscordCommand";
 
 export interface IhackingScripts {
   primaryCmd: string;
@@ -690,6 +690,8 @@ export class LearnCommand extends DiscordCommand {
       }
     ]
   ];
+
+  responseTime = 120000; // 2 minutes
   constructor(
     client: Discord.Client,
     message: Discord.Message,
@@ -698,6 +700,7 @@ export class LearnCommand extends DiscordCommand {
     super(client, message, cmdArguments);
     let page: number;
     try {
+      // tries to get the page number
       page = this.args[0] !== undefined ? parseInt(this.args[0], 10) : 1;
       this.openLearningBook(page);
     } catch (e) {
@@ -705,6 +708,7 @@ export class LearnCommand extends DiscordCommand {
     }
   }
   getCommandInfo(primeCmd: string) {
+    // makes all the different levels into one array
     const flatten = [
       ...LearnCommand.HACKER_SCRIPTS[0],
       ...LearnCommand.HACKER_SCRIPTS[1],
@@ -726,8 +730,8 @@ export class LearnCommand extends DiscordCommand {
   openLearningBook(page: number) {
     //@ts-ignore
     this.msg.channel.send(this.GetPage(page)).then((m: Discord.Message) => {
-      m.delete(60000);
-      m.react("👈").then(mr => {
+      m.delete(this.responseTime);
+      m.react("👈").then(r => {
         m.react("👉");
         const backWordsFilter = (r: Discord.MessageReaction, u: Discord.User) =>
           r.emoji.name === "👈" && u.id === this.msg.author.id;
@@ -735,18 +739,20 @@ export class LearnCommand extends DiscordCommand {
           r.emoji.name === "👉" && u.id === this.msg.author.id;
 
         const backWords = m.createReactionCollector(backWordsFilter, {
-          time: 60000
+          time: this.responseTime
         });
         const forWords = m.createReactionCollector(forWordsFilter, {
-          time: 60000
+          time: this.responseTime
         });
 
-        backWords.on("collect", r => {
+        backWords.on("collect", async mr => {
+          await mr.remove(this.msg.author).catch(e => {});
           if (page === 1) return;
           page--;
           m.edit(this.GetPage(page));
         });
-        forWords.on("collect", r => {
+        forWords.on("collect", async mr => {
+          await mr.remove(this.msg.author).catch(e => {});
           if (page === this.joinAllLearningCommandAndSmaller().length) return;
           page++;
           m.edit(this.GetPage(page));

@@ -1,6 +1,6 @@
 import * as Discord from "discord.js";
-import { DiscordCommand } from "./DiscordCommand";
-import { IUserState, UserMD, Ilog } from "../Models/userState";
+import { DiscordCommand } from "../DiscordCommand";
+import { IUserState, UserMD, Ilog } from "../../Models/userState";
 
 export class LogCommand extends DiscordCommand {
   constructor(

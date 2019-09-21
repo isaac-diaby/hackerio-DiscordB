@@ -1,10 +1,11 @@
 import * as Discord from "discord.js";
 import { GameCommandsOBJ } from "./Commands";
-import { UserMD, IUserState, uuidv4 } from "./Models/userState";
-import { EliteCommand } from "./Commands/eliteCommand";
-import { RigisterUser } from "./Commands/registerUser";
+import { UserMD, IUserState } from "./Models/userState";
+import { EliteCommand } from "./Commands/account/eliteCommand";
+import { RigisterUser } from "./Commands/account/registerUser";
 // @ts-ignore
 import blapi from "blapi";
+import { UserStatsCommand } from "./Commands/account/getUserStat";
 export class DiscordBotRun {
   mainGuildData = {
     id: "566982444822036500",
@@ -68,8 +69,8 @@ export class DiscordBotRun {
         }
       ).exec();
 
-      this.botOnlineListen();
       // console.log(DiscordBotRun.LevelSystemXp)
+      this.botOnlineListen();
     });
   }
 
@@ -113,7 +114,7 @@ export class DiscordBotRun {
             return;
           }
           if (!userData.online)
-            this.setUserToOnline({
+            UserStatsCommand.setUserToOnline({
               userID: receivedMessage.author.id,
               status: true
             });
@@ -128,14 +129,14 @@ export class DiscordBotRun {
                 receivedMessage.author.presence.status === "idle" ||
                 receivedMessage.author.presence.status === "offline"
               ) {
-                this.setUserToOnline({
+                UserStatsCommand.setUserToOnline({
                   userID: receivedMessage.author.id,
                   status: false
                 });
                 this.CURRENTLY_ONLINE.delete(receivedMessage.author.id);
                 clearInterval(StatusUpdate);
               }
-              this.checkIfUserLeveledUp(userData, receivedMessage);
+              UserStatsCommand.checkIfUserLeveledUp(userData, receivedMessage);
             }, userUpdateTime);
           }
 
@@ -160,7 +161,7 @@ export class DiscordBotRun {
             return;
           let argsCmd = commands.slice(1);
           if (primaryCmd === "levelup") {
-            this.checkIfUserLeveledUp(userData, receivedMessage);
+            UserStatsCommand.checkIfUserLeveledUp(userData, receivedMessage);
             return;
           }
           // try execute the command
@@ -179,12 +180,6 @@ export class DiscordBotRun {
     });
   }
 
-  // Set user to online/offline in DB
-  setUserToOnline({ userID, status }: { userID: string; status: boolean }) {
-    UserMD.findOneAndUpdate({ userID }, { $set: { online: status } })
-      .exec()
-      .catch(e => console.log(e));
-  }
   // tells the user that there is no command with that primary command
   noCommandsFound({
     Msg,
@@ -198,38 +193,5 @@ export class DiscordBotRun {
       .setDescription(`${Msg.author}`)
       .addField("Error:", `The command "${triedCmd}" does not exist!`);
     Msg.channel.send(primaryCmdErrorMSG);
-  }
-  getChannelType(message: Discord.Message) {
-    return message.channel.type;
-  }
-  async checkIfUserLeveledUp(userData: IUserState, msg: Discord.Message) {
-    UserMD.findOne({ userID: userData.userID }).then(async userUpdatedData => {
-      const currentLevelData = [...DiscordBotRun.LevelSystemXp].filter(
-        stage => stage.level === userUpdatedData.level.current
-      );
-      // console.log(currentLevelData)
-      if (currentLevelData) {
-        if (
-          userUpdatedData.level.xp >= currentLevelData[0].xp &&
-          currentLevelData[0].xp
-        ) {
-          const newLevel = ++userUpdatedData.level.current;
-          const cryptoGained = newLevel * 1500;
-          await UserMD.findOneAndUpdate(
-            { userID: userData.userID },
-            {
-              $inc: {
-                "level.current": 1,
-                "level.xp": -(currentLevelData[0].xp as number),
-                crypto: cryptoGained
-              }
-            }
-          ).exec();
-          await msg.author.send(
-            `🎉👏 Congrate you are now level ${newLevel} and got ${cryptoGained} Cryptos 🎉`
-          );
-        }
-      }
-    });
   }
 }

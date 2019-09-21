@@ -63,6 +63,7 @@ export abstract class DiscordCommand {
       message.channel.send("Missing Manage Messages Role");
     });
   }
+
   get OfficialServer() {
     return this.botClient.guilds.get(this.mainGuildData.id);
   }

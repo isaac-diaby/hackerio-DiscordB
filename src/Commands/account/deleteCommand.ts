@@ -1,6 +1,6 @@
 import * as Discord from "discord.js";
-import { UserMD, IUserState } from "../Models/userState";
-import { DiscordCommand } from "./DiscordCommand";
+import { UserMD, IUserState } from "../../Models/userState";
+import { DiscordCommand } from "../DiscordCommand";
 
 export class DeleteCommand extends DiscordCommand {
   userData: IUserState;

@@ -1,7 +1,7 @@
 import * as Discord from "discord.js";
-import { DiscordCommand } from "./DiscordCommand";
-import { IUserState, UserMD } from "../Models/userState";
-import { OnlineGames } from "./OnlineGames/onlineGame";
+import { DiscordCommand } from "../DiscordCommand";
+import { IUserState, UserMD } from "../../Models/userState";
+import { OnlineGames } from "../OnlineGames/onlineGame";
 
 export class LeaveGameCommand extends DiscordCommand {
   userData: IUserState;
