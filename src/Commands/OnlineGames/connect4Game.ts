@@ -74,11 +74,14 @@ export class Connect4 extends OnlineGames {
       .send(".")
       .catch(e => console.log(e))) as Discord.Message;
     let playerMSGs: Array<Discord.Message> = [];
+
+    // if the game is in the dm, it will sent an initial msg (game board)
     if (isInDm) {
       for (let player in this.gameMetaData.players) {
         playerMSGs.push((await this.sendMsgViaDm(
           mainGameBoardMessage.url,
-          this.gameMetaData.players[player]
+          this.gameMetaData.players[player],
+          false
         )) as Discord.Message);
       }
     }
@@ -102,10 +105,11 @@ export class Connect4 extends OnlineGames {
     }
     if (isInDm) {
       for (let player in this.gameMetaData.players) {
-        (await this.sendMsgViaDm(
+        await this.sendMsgViaDm(
           `Game Ended: ${mainGameBoardMessage.url}`,
-          this.gameMetaData.players[player]
-        )) as Discord.Message;
+          this.gameMetaData.players[player],
+          false
+        );
       }
     }
   }
@@ -118,6 +122,7 @@ export class Connect4 extends OnlineGames {
     mainGameBoardMessage: Discord.Message,
     playerMSGs?: Array<Discord.Message>
   ) {
+    // render the new game board and the data
     const currentBoard = this.drawBoard(),
       gameBoardDisplayMSG = new Discord.RichEmbed()
         .setDescription(
@@ -130,9 +135,9 @@ export class Connect4 extends OnlineGames {
           `${this.gameMetaData.players[playerTurn - 1]}`
         )
         .setFooter(this.gameMetaData.gameID);
-
+    // updates the main bgame board
     await mainGameBoardMessage.edit(gameBoardDisplayMSG);
-
+    // if this is a dm game expecting only 2 players
     if (playerMSGs) {
       let msgsUpdate = await Promise.all([
         playerMSGs[0].edit(
@@ -143,11 +148,13 @@ export class Connect4 extends OnlineGames {
         ),
         playerMSGs[1].edit(gameBoardDisplayMSG),
         this.sendMsgViaDm(
-          "Its Your Turn",
-          this.gameMetaData.players[playerTurn - 1]
+          `${this.gameMetaData.players[playerTurn - 1]} Its Your Turn`,
+          this.gameMetaData.players[playerTurn - 1],
+          false
         ) as Promise<Discord.Message>
       ]);
-      this.deleteMessageIfCan(msgsUpdate[2], 3);
+
+      this.deleteMessageIfCan(msgsUpdate[2], 6000);
     }
     let slotSelected = playerMSGs
       ? await this.listenToslotSelectionInChannel(playerMSGs[
@@ -166,12 +173,15 @@ export class Connect4 extends OnlineGames {
       let channel = playerMSGs
         ? playerMSGs[playerTurn - 1]
         : mainGameBoardMessage;
-
-      await channel.channel.send(
-        `${
-          this.gameMetaData.players[playerTurn - 1]
-        } please select a slot 1-${this.GameData.config.boardLength + 1}`
-      );
+      // tells the user that they need to make a move
+      await channel.channel
+        .send(
+          `${
+            this.gameMetaData.players[playerTurn - 1]
+          } Please select a slot 1-${this.GameData.config.boardLength +
+            1}. You have ${attemptLimit - attempts} left`
+        )
+        .then(m => this.deleteMessageIfCan(m as Discord.Message, 3000));
       slotSelected = playerMSGs
         ? await this.listenToslotSelectionInChannel(
             playerMSGs[playerTurn - 1] as Discord.Message,
@@ -205,7 +215,7 @@ export class Connect4 extends OnlineGames {
           case true:
             gameWinLoseDisplayMSG
               .setColor("#001900")
-              .setDescription("the game ended in a draw!")
+              .setDescription("The game ended in a draw!")
               .addField("Coins adding", 10, true);
             break;
           default:
@@ -524,10 +534,12 @@ export class Connect4 extends OnlineGames {
     const selectedMSG = selectionMSGs.first();
     if (!selectedMSG) return null;
     const slectedSlot = parseInt(selectedMSG.content, 10) - 1;
-    inDm ? null : this.deleteMessageIfCan(selectedMSG);
+    inDm ? null : this.deleteMessageIfCan(selectedMSG, 3000);
     return slectedSlot;
   }
-
+  /**
+   * This creats the string representation of the connect 4 game board
+   */
   drawBoard() {
     let board = "";
     for (let row = 0; row < this.GameData.gameBoard.length; row++) {

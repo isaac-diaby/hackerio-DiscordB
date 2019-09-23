@@ -59,9 +59,13 @@ export abstract class DiscordCommand {
    * - message the message that you want to make disappear
    */
   async deleteMessageIfCan(message: Discord.Message, time: number = 0) {
-    return message.delete(time).catch(e => {
-      message.channel.send("Missing Manage Messages Role");
-    });
+    if (
+      message.channel.type !== "dm" ||
+      message.author.id === this.botClient.user.id
+    )
+      return message.delete(time).catch(e => {
+        message.channel.send("Missing Manage Messages Role");
+      });
   }
 
   get OfficialServer() {
