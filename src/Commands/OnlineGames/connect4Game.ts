@@ -546,7 +546,7 @@ export class Connect4 extends OnlineGames {
       for (let col = 0; col < this.GameData.gameBoard[row].length; col++) {
         switch (this.GameData.gameBoard[row][col]) {
           case 1:
-            board += ":large_blue_circle:";
+            board += ":blue_circle:";
             break;
           case 2:
             board += ":red_circle:";

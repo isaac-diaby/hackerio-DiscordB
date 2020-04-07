@@ -57,10 +57,9 @@ export class HackCommand extends DiscordCommand {
 
     const enemyData = await this.doUserCheckViaIp(selectedIp);
 
-    // console.log(userExists)
     if (enemyData == null) {
       await this.msg.channel.send(
-        `could not find user with an ip of ${selectedIp}. Please enter a valid ip or random. \n${
+        `Could not find user offline with an ip of ${selectedIp}. Please enter a valid ip or random. \n${
           process.env.BOT_PREFIX
         }hack -u <ip = ip | (-r | random)> `
       );

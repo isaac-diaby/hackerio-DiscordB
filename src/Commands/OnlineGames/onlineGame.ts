@@ -243,6 +243,7 @@ export abstract class OnlineGames extends DiscordCommand {
     // updating each players status to in game
     await UserMD.updateMany(
       {
+        //@ts-ignore
         userID: this.gameMetaData.playerIDs
       },
       {
@@ -254,10 +255,10 @@ export abstract class OnlineGames extends DiscordCommand {
       }
     )
       .exec()
-      .then(updatedData => {
-        // console.log(updatedData);
-      })
-      .catch(e => {
+      // .then(updatedData => {
+      //   // console.log(updatedData);
+      // })
+      .catch((e: any) => {
         console.log("error whilst updating user to lobby!");
         console.log(e);
       });
