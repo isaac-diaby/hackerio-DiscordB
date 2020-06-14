@@ -719,18 +719,18 @@ export class LearnCommand extends DiscordCommand {
     )[0];
     if (selectedCmd === undefined)
       return this.msg.channel.send("could not find this command");
-    const Msg = new Discord.RichEmbed()
+    const Msg = new Discord.MessageEmbed()
       .setColor("#3BB2E2")
       .addField("Command", selectedCmd.primaryCmd, true)
       .addField("Program", selectedCmd.program, true)
       .addField("Description", selectedCmd.description, true)
-      .addBlankField(true);
+      .addField("\u200b", "\u200b");
     this.msg.channel.send(Msg);
   }
   openLearningBook(page: number) {
     //@ts-ignore
     this.msg.channel.send(this.GetPage(page)).then((m: Discord.Message) => {
-      m.delete(this.responseTime);
+      m.delete({ timeout: this.responseTime });
       m.react("👈").then(r => {
         m.react("👉");
         const backWordsFilter = (r: Discord.MessageReaction, u: Discord.User) =>
@@ -746,13 +746,13 @@ export class LearnCommand extends DiscordCommand {
         });
 
         backWords.on("collect", async mr => {
-          await mr.remove(this.msg.author).catch(e => {});
+          await mr.users.remove(this.msg.author).catch(e => {});
           if (page === 1) return;
           page--;
           m.edit(this.GetPage(page));
         });
         forWords.on("collect", async mr => {
-          await mr.remove(this.msg.author).catch(e => {});
+          await mr.users.remove(this.msg.author).catch(e => {});
           if (page === this.joinAllLearningCommandAndSmaller().length) return;
           page++;
           m.edit(this.GetPage(page));
@@ -763,7 +763,7 @@ export class LearnCommand extends DiscordCommand {
   GetPage(page: number) {
     const newSplitArray = this.joinAllLearningCommandAndSmaller();
     // console.log(newSplitArray)
-    const Msg = new Discord.RichEmbed()
+    const Msg = new Discord.MessageEmbed()
       .setColor("#3BB2E2")
       .setTitle(`Commands Dictionary`)
       .setFooter(`Page ${page} of ${newSplitArray.length}`);
@@ -772,7 +772,7 @@ export class LearnCommand extends DiscordCommand {
       Msg.addField("Command", script.primaryCmd, true)
         .addField("Program", script.program, true)
         .addField("Description", script.description, true)
-        .addBlankField();
+        .addField("\u200b", "\u200b");
     });
     return Msg;
   }

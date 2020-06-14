@@ -12,7 +12,7 @@ export class RigisterUser {
     public channel:
       | Discord.TextChannel
       | Discord.DMChannel
-      | Discord.GroupDMChannel
+      | Discord.NewsChannel
   ) {
     this.RegisterUser();
   }
@@ -29,7 +29,7 @@ export class RigisterUser {
    * This make the user confirm the creation of their account
    */
   async createAccountConfimation() {
-    const ConfirmationMSG = new Discord.RichEmbed()
+    const ConfirmationMSG = new Discord.MessageEmbed()
       .setAuthor(this.user.username)
       .setColor("#F44336")
       .setDescription(
@@ -98,7 +98,7 @@ export class RigisterUser {
    * This makes the user choose wither or not to opt in the Dm news / updates and more
    */
   async askToOptinTheDmsNews() {
-    const ConfirmationMSG = new Discord.RichEmbed()
+    const ConfirmationMSG = new Discord.MessageEmbed()
       .setAuthor(this.user.username)
       .setColor("#F44336")
       .setDescription("Do you want to opt-in to Direct Messages (DM) updates?")
@@ -165,7 +165,7 @@ export class RigisterUser {
       .save()
       .then((data: any) => {
         // new user created success message
-        const successfulNewAccountMSG = new Discord.RichEmbed()
+        const successfulNewAccountMSG = new Discord.MessageEmbed()
           .setColor("#60BE82")
           .setAuthor(`${this.user.tag}`)
           .setTitle("New Profile Created!")
@@ -202,13 +202,13 @@ export class RigisterUser {
             "5. your all set to explore, hack, take part in events and play mini-games."
           ])
           .setFooter(
-            "For more features and exclusive bonuses become a Donater!: http://bit.ly/CGBdonate"
+            "For more features and exclusive bonuses, become a Donater!: http://bit.ly/HIOdonate"
           );
         this.channel.send(successfulNewAccountMSG);
       })
       .catch((e: any) => {
         // new user created fail message
-        const FailedNewUserMSG = new Discord.RichEmbed()
+        const FailedNewUserMSG = new Discord.MessageEmbed()
           .setTitle("New User Error!")
           .setColor("#F44336")
           .setAuthor(`${this.user.tag}`)

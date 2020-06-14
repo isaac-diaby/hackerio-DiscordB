@@ -15,7 +15,7 @@ export class OptCommand extends DiscordCommand {
     UserMD.findOne({ userID: message.author.id }).then(
       async (userData: IUserState) => {
         if (userData) {
-          let Msg = new Discord.RichEmbed()
+          let Msg = new Discord.MessageEmbed()
             .setTitle("Toggle Opt-in")
             .setDescription(
               "Opt-in means that you allow HackerIO to message you via Direct Messages about events and news updates"

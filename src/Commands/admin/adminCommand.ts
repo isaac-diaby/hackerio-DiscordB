@@ -21,7 +21,7 @@ export class AdministratorCommand extends DiscordCommand {
     }
   }
   CheckIfAdmin() {
-    const OfficialServerGuildMember = this.OfficialServer.members.get(
+    const OfficialServerGuildMember = this.OfficialServer.members.cache.get(
       this.msg.author.id
     );
     if (OfficialServerGuildMember !== undefined) {
@@ -29,7 +29,9 @@ export class AdministratorCommand extends DiscordCommand {
       //   console.log(this.botClient.guilds.get('566982444822036500').roles)
       // HackerIO Elite == 605180133535645745
       if (
-        !OfficialServerGuildMember.roles.has(this.mainGuildData.roles.admin)
+        !OfficialServerGuildMember.roles.cache.has(
+          this.mainGuildData.roles.admin
+        )
       ) {
         this.msg.reply("You Need Admin To Run This Command");
         return false;
@@ -53,7 +55,7 @@ export class AdministratorCommand extends DiscordCommand {
         fields?: { name: string; value: string }[];
       };
     } = JSON.parse(`${this.args.join(" ").match("{*}").input}`);
-    const Msg = new Discord.RichEmbed()
+    const Msg = new Discord.MessageEmbed()
 
       .setAuthor(
         argumentProps.messagedata.author
@@ -94,7 +96,7 @@ export class AdministratorCommand extends DiscordCommand {
         }
       }
       for (let user of users) {
-        const discordUser = this.botClient.users.get(user.userID);
+        const discordUser = this.botClient.users.cache.get(user.userID);
         if (discordUser)
           await discordUser
             .send(Msg)

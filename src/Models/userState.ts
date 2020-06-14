@@ -66,7 +66,7 @@ export interface IUserState {
   userID: string;
   ip: string;
   online: Boolean;
-  log: [Ilog];
+  log: Ilog[];
   inHack: {
     hackID: string;
     isInHack: boolean;

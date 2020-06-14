@@ -10,7 +10,7 @@ export class LogCommand extends DiscordCommand {
   ) {
     super(client, message, cmdArguments);
 
-    // const helpMessage = new Discord.RichEmbed()
+    // const helpMessage = new Discord.MessageEmbed()
     // .setColor('#D3D3D3')
     // .setTitle('My Log');
 
@@ -32,20 +32,20 @@ export class LogCommand extends DiscordCommand {
 
     // .then((messageSent: Discord.Message) => messageSent.delete(60000));
   }
-  async openLog(userDataLog: [Ilog]) {
+  async openLog(userDataLog: Ilog[]) {
     let selectedLog: string;
     try {
       if (this.args[1] !== undefined) selectedLog = this.args[1];
       const selectedLogData = userDataLog[parseInt(selectedLog, 10)];
       const goodActions: Array<string> = ["GAVE", "TOOK", "DEFENDED"];
-      const Msg = new Discord.RichEmbed()
+      const Msg = new Discord.MessageEmbed()
         .setColor(
           goodActions.includes(selectedLogData.type) ? "#60BE82" : "#F44336"
         )
         .setTitle("My Logs")
         .addField("TYPE", selectedLogData.type, true)
         .addField("DESCRIPTION", selectedLogData.des, true)
-        .addBlankField(true)
+        .addField("\u200b", "\u200b")
         .addField(
           "CASH CHANGE",
           selectedLogData.cashDif ? selectedLogData.cashDif : "0",
@@ -58,7 +58,7 @@ export class LogCommand extends DiscordCommand {
       await this.msg.channel.send("😶 Could not find a log with that id");
     }
   }
-  async deleteLog(userDataLog: [Ilog], userID: string) {
+  async deleteLog(userDataLog: Ilog[], userID: string) {
     let selectedLog: string;
     if (this.args[1] !== undefined) selectedLog = this.args[1];
     if (selectedLog === "all")
@@ -67,7 +67,7 @@ export class LogCommand extends DiscordCommand {
         {
           log: []
         }
-      ).then(s => this.msg.channel.send("👀 Deleted All Logs"));
+      ).then(() => this.msg.channel.send("👀 Deleted All Logs"));
 
     if (userDataLog[parseInt(selectedLog, 10)] === undefined)
       return await this.msg.channel.send(
@@ -81,7 +81,7 @@ export class LogCommand extends DiscordCommand {
     ).then(s => this.msg.channel.send("👀 Deleted Log id: " + selectedLog));
   }
 
-  myLogBrief(userDataLog: [Ilog], page: number) {
+  myLogBrief(userDataLog: Ilog[], page: number) {
     //@ts-ignore
     if (userDataLog.length === 0)
       return this.msg.channel.send("Your Log Is Empty");
@@ -121,7 +121,7 @@ export class LogCommand extends DiscordCommand {
     );
   }
 
-  splitMyLogs(logs: [Ilog]) {
+  splitMyLogs(logs: Ilog[]) {
     const splitBy = 5;
     let newSplitArray = [];
     for (let i = 0; i < logs.length; i += splitBy) {
@@ -130,11 +130,11 @@ export class LogCommand extends DiscordCommand {
     return newSplitArray;
   }
 
-  GetLogPage(page: number, logs: [Ilog]) {
+  GetLogPage(page: number, logs: Ilog[]) {
     const newSplitArrayFull = this.splitMyLogs(logs);
     const newSplitArraySelected = this.splitMyLogs(logs)[page - 1];
     // console.log(newSplitArray)
-    const Msg = new Discord.RichEmbed()
+    const Msg = new Discord.MessageEmbed()
       .setTitle("My Logs")
       .setFooter(`Page ${page} of ${newSplitArrayFull.length}`);
     let logIndex = page - 1 !== 0 ? (page - 1) * 5 : 0;

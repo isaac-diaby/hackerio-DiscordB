@@ -19,7 +19,7 @@ export class SuggestCommand extends DiscordCommand {
     // parse the suggestion type
     const suggestionType = this.args.shift();
 
-    const suggestionMSG = new Discord.RichEmbed().setAuthor(
+    const suggestionMSG = new Discord.MessageEmbed().setAuthor(
       this.msg.author.tag
     );
 
@@ -29,8 +29,8 @@ export class SuggestCommand extends DiscordCommand {
       const suggestionMessage = this.args.join(" ");
       suggestionMSG.addField(">", suggestionMessage);
       new Discord.TextChannel(
-        this.botClient.guilds.get(this.mainGuildData.id),
-        this.botClient.channels.get(
+        this.botClient.guilds.cache.get(this.mainGuildData.id),
+        this.botClient.channels.cache.get(
           this.mainGuildData.channels.suggestions.channel
         )
       )
@@ -61,7 +61,7 @@ export class SuggestCommand extends DiscordCommand {
    * sends the user the format on howthe suggestion should be constructed
    */
   async displaySuggestionFormat() {
-    const formatMSG = new Discord.RichEmbed()
+    const formatMSG = new Discord.MessageEmbed()
       .setColor("#F44336")
       .setDescription(
         `Invalid Suggestion format\n
@@ -92,10 +92,10 @@ export class SuggestCommand extends DiscordCommand {
       reaction: Discord.MessageReaction,
       user: Discord.GuildMember
     ) => {
-      const isPartOftheTeam = this.botClient.guilds
+      const isPartOftheTeam = this.botClient.guilds.cache
         .get(this.mainGuildData.id)
-        .members.get(user.id)
-        .roles.has(this.mainGuildData.roles.team);
+        .members.cache.get(user.id)
+        .roles.cache.has(this.mainGuildData.roles.team);
 
       if (isPartOftheTeam && reaction.emoji.name === approvalEmoji) {
         return true;
@@ -150,7 +150,7 @@ export class SuggestCommand extends DiscordCommand {
 
             console.log(body);
             message.channel.send(
-              new Discord.RichEmbed()
+              new Discord.MessageEmbed()
                 .setColor(
                   suggestionData.suggestionType === "bug"
                     ? "#F44336"
@@ -166,7 +166,7 @@ export class SuggestCommand extends DiscordCommand {
                 .addField("Suggestion Message", message.url)
                 .addField(
                   "Aprove By",
-                  reactionResults.get(approvalEmoji).users.first().tag
+                  reactionResults.get(approvalEmoji).users.cache.first().tag
                 )
             );
           });

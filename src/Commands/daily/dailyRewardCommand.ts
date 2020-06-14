@@ -1,6 +1,6 @@
 import * as Discord from "discord.js";
 import { DiscordCommand } from "../DiscordCommand";
-import { IUserState, UserMD } from "../../Models/userState";
+import { UserMD } from "../../Models/userState";
 
 export class DailyRewardCommand extends DiscordCommand {
   static CLAIMED: Set<string> = new Set();

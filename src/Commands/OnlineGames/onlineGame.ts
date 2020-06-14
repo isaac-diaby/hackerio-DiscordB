@@ -53,13 +53,13 @@ export abstract class OnlineGames extends DiscordCommand {
       channelID: this.msg.channel.id,
       metaInfo: this.metaConfig
     };
-    let currentStatusMSG = new Discord.RichEmbed().setTitle(
+    let currentStatusMSG = new Discord.MessageEmbed().setTitle(
       `Playing ${this.metaConfig.title}`
     );
     // .addField('GameID', this.gameMetaData.gameID);
 
     // the message which the players have to accept
-    const ConfirmationMSG = new Discord.RichEmbed()
+    const ConfirmationMSG = new Discord.MessageEmbed()
       .setImage(this.metaConfig.imageUrl)
       .setTitle(`Playing ${this.metaConfig.title}`)
       .setDescription(
@@ -139,13 +139,13 @@ export abstract class OnlineGames extends DiscordCommand {
         if (reactionResults.get(acceptEmoji))
           filteredUsersAcp = reactionResults
             .get(acceptEmoji)
-            .users.filter(user =>
+            .users.cache.filter(user =>
               this.gameMetaData.playerIDs.includes(user.id)
             );
         if (reactionResults.get(rejectEmoji))
           filteredUsersRej = reactionResults
             .get(rejectEmoji)
-            .users.filter(user =>
+            .users.cache.filter(user =>
               this.gameMetaData.playerIDs.includes(user.id)
             );
         if (
@@ -203,7 +203,7 @@ export abstract class OnlineGames extends DiscordCommand {
       });
       const { _id } = await InitializeGameData.save();
       // saved game data
-      const succesfulInitializeMSG = new Discord.RichEmbed()
+      const succesfulInitializeMSG = new Discord.MessageEmbed()
         .setTitle("Succesful Initialization")
         .setDescription("Succesfully initialized the game on our servers")
         .addField("GameID", this.gameMetaData.gameID)
@@ -217,7 +217,7 @@ export abstract class OnlineGames extends DiscordCommand {
     } catch (e) {
       console.log(e);
       // Failed to save game data
-      const failedInitializeMSG = new Discord.RichEmbed()
+      const failedInitializeMSG = new Discord.MessageEmbed()
         .setTitle("Failed Initialization ")
         .setDescription("Failed to initialize the game on our servers")
         .addField("GameID", this.gameMetaData.gameID)
@@ -250,7 +250,7 @@ export abstract class OnlineGames extends DiscordCommand {
         ingame: {
           gameID: _id, //this.gameMetaData.gameID,
           isInGame: true,
-          lastGame: Date.now()
+          lastGame: new Date()
         }
       }
     )
@@ -279,7 +279,7 @@ export abstract class OnlineGames extends DiscordCommand {
         ingame: {
           gameID: null,
           isInGame: false,
-          lastGame: Date.now()
+          lastGame: new Date()
         }
       }
     )
@@ -351,7 +351,7 @@ export abstract class OnlineGames extends DiscordCommand {
         OnlineGames.updatePlayerStatusLeaveGame(playerID as string);
       });
 
-      const gameClosedeMSG = new Discord.RichEmbed()
+      const gameClosedeMSG = new Discord.MessageEmbed()
         .setTitle("Games Close")
         .setDescription("successfully closed the game on our servers")
         .addField("GameID", this.gameMetaData.gameID)
@@ -400,7 +400,7 @@ export abstract class OnlineGames extends DiscordCommand {
       if (!userData) {
         await msg.reply(`The user ${user.value} you mentioned isnt in the DB`);
       } else if (userData.ingame.isInGame === true) {
-        const theyAreAlreadyInAGameMSG = new Discord.RichEmbed()
+        const theyAreAlreadyInAGameMSG = new Discord.MessageEmbed()
           .setColor("#F44336")
           .setAuthor(user.value.username)
           .setDescription(
@@ -421,7 +421,7 @@ export abstract class OnlineGames extends DiscordCommand {
     // checks if your not vs yourself
 
     if (playersinfo.ids.includes(msg.author.id)) {
-      const noTagSelf = new Discord.RichEmbed()
+      const noTagSelf = new Discord.MessageEmbed()
         .setColor("#F44336")
         .setTitle("Error")
         .setDescription("You cannot tag yourself!");

@@ -25,7 +25,7 @@ export class LeaveGameCommand extends DiscordCommand {
     });
   }
   leaveGame() {
-    const leftGameMSG = new Discord.RichEmbed()
+    const leftGameMSG = new Discord.MessageEmbed()
       .setAuthor(this.msg.author.username)
       .setColor("#008080")
       .addField("GameID", this.userData.ingame.gameID);

@@ -124,7 +124,7 @@ export class Connect4 extends OnlineGames {
   ) {
     // render the new game board and the data
     const currentBoard = this.drawBoard(),
-      gameBoardDisplayMSG = new Discord.RichEmbed()
+      gameBoardDisplayMSG = new Discord.MessageEmbed()
         .setDescription(
           `Listening for a number 1-${this.GameData.config.boardLength + 1}`
         )
@@ -207,7 +207,7 @@ export class Connect4 extends OnlineGames {
     ) {
       case true:
         this.GameData.onGoing = false;
-        const gameWinLoseDisplayMSG = new Discord.RichEmbed()
+        const gameWinLoseDisplayMSG = new Discord.MessageEmbed()
           .addField("Current Board", this.drawBoard())
           .setFooter(this.gameMetaData.gameID);
 
@@ -525,7 +525,7 @@ export class Connect4 extends OnlineGames {
     const selectionMSGs = await board.channel.awaitMessages(
       playerTurnOnlyFilter,
       {
-        maxMatches: 1,
+        maxProcessed: 1,
         errors: ["Ran out of time!"],
         time: 6000
       }
@@ -534,7 +534,7 @@ export class Connect4 extends OnlineGames {
     const selectedMSG = selectionMSGs.first();
     if (!selectedMSG) return null;
     const slectedSlot = parseInt(selectedMSG.content, 10) - 1;
-    inDm ? null : this.deleteMessageIfCan(selectedMSG, 3000);
+    if (!inDm) this.deleteMessageIfCan(selectedMSG, 3000);
     return slectedSlot;
   }
   /**

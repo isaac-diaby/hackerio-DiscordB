@@ -28,7 +28,7 @@ export class DeleteCommand extends DiscordCommand {
     const acceptEmoji = `🔵`,
       rejectEmoji = `🔴`;
 
-    const ConfirmationMSG = new Discord.RichEmbed()
+    const ConfirmationMSG = new Discord.MessageEmbed()
       .setAuthor(message.author.username)
       .setColor("#F44336")
       .setDescription("Are You Sure You Want To Delete This Account?")

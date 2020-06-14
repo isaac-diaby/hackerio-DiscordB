@@ -44,7 +44,7 @@ export class HackCommand extends DiscordCommand {
       const randomUser = await this.getRandomOfflineUserData();
       if (randomUser == null)
         return this.msg.channel.send(
-          new Discord.RichEmbed()
+          new Discord.MessageEmbed()
             .setColor("#F44336")
             .setTitle("Couldn't Find A Random Player.")
             .addField(
@@ -109,7 +109,7 @@ export class HackCommand extends DiscordCommand {
     enemyData: IUserState,
     userData: IUserState
   ) {
-    const Msg = new Discord.RichEmbed();
+    const Msg = new Discord.MessageEmbed();
     let myFinalMoney: number = userData.crypto;
     let myFinalXp: number = userData.level.xp;
     let enemyFinalMoney: number = enemyData.crypto;
@@ -193,7 +193,7 @@ export class HackCommand extends DiscordCommand {
       difficulty = "0 - 66";
     }
     const roughMoneyEstimate = Math.floor(enemyData.crypto / 1000) * 1000;
-    let Msg = new Discord.RichEmbed()
+    let Msg = new Discord.MessageEmbed()
       .setTitle(`Hacking ${enemyData.ip}`)
       .setDescription("Are you sure you want to continue with this action?")
       .setColor("#F44336")
@@ -211,7 +211,7 @@ export class HackCommand extends DiscordCommand {
           ? enemyData.playerStat.outcast
           : "N/A - Become Elite To See This"
       )
-      .addBlankField()
+      .addField("\u200b", "\u200b")
       .addField("Note Risk", [
         "If you fail your hack the enemy player will have your ip in their logs,they can attemp to hack you back!"
       ])
@@ -296,7 +296,7 @@ export class HackCommand extends DiscordCommand {
       if (availableBanksOnly.length === 0) {
         selectedBankName = "quit";
       } else {
-        let Msg = new Discord.RichEmbed()
+        let Msg = new Discord.MessageEmbed()
           .setTitle("Please Select A Bank Via Name")
           .addField(
             "Bank Names",
@@ -393,14 +393,14 @@ export class HackCommand extends DiscordCommand {
       );
       return;
     }
-    let Msg = new Discord.RichEmbed()
+    let Msg = new Discord.MessageEmbed()
       .setTitle(`Hacking ${bankDetails.name} Bank`)
       .setDescription("Are you sure you want to continue with this action?")
       .setColor("#F44336")
       .addField("Required Level", bankDetails.minPlayerLevel, true)
       .addField("My Level", userData.level.current, true)
       .addField("Required Money To Cover Your loses", bankDetails.hackPrice * 2)
-      .addBlankField()
+      .addField("\u200b", "\u200b")
       .addField("Note Risk", [
         "You need to have at least half the required crypto!",
         "If you fail your hack the bank, you will be fined (90 - 100%)",
@@ -485,7 +485,7 @@ export class HackCommand extends DiscordCommand {
       myFinalXp += Math.round(bankOffering / 2);
     }
 
-    const Msg = new Discord.RichEmbed()
+    const Msg = new Discord.MessageEmbed()
       .setAuthor(`Hacking ${bankDetails.name} Bank`)
       .setTitle(
         `You ${won ? "Successfully Won" : "Unfortunately Lost"} The Hack!`
@@ -536,7 +536,7 @@ export class HackCommand extends DiscordCommand {
     )) as Discord.Message;
     for (let i = 1; i <= rounds; i++) {
       // TODO: add different type of hack
-      const Msg = new Discord.RichEmbed()
+      const Msg = new Discord.MessageEmbed()
         .setColor("#551A8B")
         .setTitle(`Commands left ${i}/${rounds}`)
         .addField("Correct", CorrentAnswers);
@@ -549,7 +549,7 @@ export class HackCommand extends DiscordCommand {
       CorrentAnswers += (await hackingTypes.randomHackType()) ? 1 : 0;
     }
     const percentage = Math.round((CorrentAnswers / rounds) * 100) / 100;
-    questionMsg.delete(60000);
+    questionMsg.delete({ timeout: 60000 });
     return 0.1 + percentage;
   }
   /**
@@ -624,7 +624,7 @@ export class HackCommand extends DiscordCommand {
         inHack: {
           hackID,
           isInHack,
-          lastHack: Date.now()
+          lastHack: new Date()
         }
       }
     ).exec();

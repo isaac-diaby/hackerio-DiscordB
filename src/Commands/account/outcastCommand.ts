@@ -22,7 +22,7 @@ export class OutCastCommand extends DiscordCommand {
             );
             return;
           default:
-            const Msg = new Discord.RichEmbed()
+            const Msg = new Discord.MessageEmbed()
               .setColor("#A9A9A9")
               .setTitle("Outcasted players (OCP)")
               .setDescription("These players are easy targets!")
@@ -72,13 +72,13 @@ export class OutCastCommand extends DiscordCommand {
   }
 
   async outcastPayConfirmationStage(cost: number, userData: IUserState) {
-    let Msg = new Discord.RichEmbed()
+    let Msg = new Discord.MessageEmbed()
       .setTitle("Paying Out Of Out Cast List")
       .setDescription("Are you sure you want to continue with this action?")
       .setColor("#F44336")
       .addField("Cost", cost, true)
       .addField("Crypto's After Transaction", userData.crypto - cost, true)
-      .addBlankField()
+      .addField("\u200b", "\u200b")
       .addField("Description", [
         "After this you will final be able to win more! and loose less when being hacked. i think its worth it!"
       ])

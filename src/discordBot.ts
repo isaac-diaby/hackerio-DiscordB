@@ -3,8 +3,9 @@ import { GameCommandsOBJ } from "./Commands";
 import { UserMD, IUserState } from "./Models/userState";
 import { EliteCommand } from "./Commands/account/eliteCommand";
 import { RigisterUser } from "./Commands/account/registerUser";
-// @ts-ignore
+
 import blapi from "blapi";
+
 import { UserStatsCommand } from "./Commands/account/getUserStat";
 export class DiscordBotRun {
   mainGuildData = {
@@ -35,31 +36,30 @@ export class DiscordBotRun {
   ]);
   //
   apiKeys = {
-    "discordbots.org": process.env.SC_DBS,
-    "botlist.space": process.env.SC_DBSPACE,
-    "mythicalbots.xyz": process.env.SC_MYTHB,
-    "yabl.xyz": process.env.SC_YABL,
-    "discordbotreviews.xyz": process.env.SC_DBR,
-    "discordbotlist.com": process.env.SC_DBL,
-    "divinediscordbots.com": process.env.SC_DDB
-
-    // "discordbots.fun": "null"
+    "botlist.space": process.env.SC_DBSPACE, // Online
+    "yabl.xyz": process.env.SC_YABL, // Online
+    "discordbotlist.com": process.env.SC_DBL // Online
   };
 
   constructor() {
     this.botClient = new Discord.Client();
     this.botClient.login(process.env.BOT_AUTHTOKEN);
     this.botClient.on("ready", () => {
-      this.botClient.user.setActivity(
-        `Hackers |  ${process.env.BOT_PREFIX}register | v${
-          process.env.BOT_VERSION
-        }`,
-        { type: "WATCHING" }
-      );
+      if (process.env.PRODUCTION)
+        this.botClient.user.setActivity(
+          `Hackers |  ${process.env.BOT_PREFIX}register | v${
+            process.env.BOT_VERSION
+          }`,
+          { type: "WATCHING" }
+        );
 
       // send server count to botlisting sites
       // blapi.setLogging(true);
-      blapi.handle(this.botClient, this.apiKeys, 15);
+      try {
+        blapi.handle(this.botClient, this.apiKeys, 15);
+      } catch (err) {
+        console.error("FAILED to push bot stats");
+      }
       console.log(`${this.botClient.user.username} is online`);
       // set all users to offline
       UserMD.updateMany(
@@ -90,7 +90,7 @@ export class DiscordBotRun {
         receivedMessage.author.presence.status === "offline"
       ) {
         receivedMessage.channel.send(
-          new Discord.RichEmbed()
+          new Discord.MessageEmbed()
             .setDescription(
               "Set your discord appearance to 'Online' or 'Do Not Disturb' in order to play the game"
             )
@@ -188,7 +188,7 @@ export class DiscordBotRun {
     Msg: Discord.Message;
     triedCmd: string;
   }) {
-    const primaryCmdErrorMSG = new Discord.RichEmbed()
+    const primaryCmdErrorMSG = new Discord.MessageEmbed()
       .setColor("#F44336")
       .setDescription(`${Msg.author}`)
       .addField("Error:", `The command "${triedCmd}" does not exist!`);

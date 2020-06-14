@@ -36,7 +36,7 @@ export abstract class DiscordCommand {
     this.args = cmdArguments;
   }
   async sendMsgViaDm(
-    message: Discord.RichEmbed | string,
+    message: Discord.MessageEmbed | string,
     user: Discord.User = this.msg.author,
     shouldNotifyUser: Boolean = true
   ) {
@@ -46,7 +46,7 @@ export abstract class DiscordCommand {
       );
     return user.send(message).catch(e => {
       this.msg.channel.send(
-        new Discord.RichEmbed().setDescription(
+        new Discord.MessageEmbed().setDescription(
           "📌 Please make sure you have 'Direct Message' enabled"
         )
       );
@@ -63,12 +63,12 @@ export abstract class DiscordCommand {
       message.channel.type !== "dm" ||
       message.author.id === this.botClient.user.id
     )
-      return message.delete(time).catch(e => {
+      return message.delete({ timeout: time }).catch(e => {
         message.channel.send("Missing Manage Messages Role");
       });
   }
 
   get OfficialServer() {
-    return this.botClient.guilds.get(this.mainGuildData.id);
+    return this.botClient.guilds.cache.get(this.mainGuildData.id);
   }
 }

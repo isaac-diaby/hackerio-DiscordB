@@ -14,7 +14,7 @@ export class UserStatsCommand extends DiscordCommand {
 
     UserMD.findOne({ userID: message.author.id })
       .then((userData: IUserState) => {
-        let Msg = new Discord.RichEmbed();
+        let Msg = new Discord.MessageEmbed();
         if (userData) {
           const currentLevelData = [...DiscordBotRun.LevelSystemXp].filter(
             stage => stage.level === userData.level.current
@@ -68,7 +68,7 @@ export class UserStatsCommand extends DiscordCommand {
       })
       .catch(e => {
         console.log(e);
-        let Msg = new Discord.RichEmbed()
+        let Msg = new Discord.MessageEmbed()
           .setColor("#F44336")
           .setDescription("No user Found in DB");
         this.sendMsgViaDm(Msg);

@@ -19,7 +19,7 @@ export class HelpCommand extends DiscordCommand {
   }
 
   getACommandInfo() {
-    const helpMessage = new Discord.RichEmbed()
+    const helpMessage = new Discord.MessageEmbed()
       .setColor("#D3D3D3")
       .setTitle(
         "Help Command Keys: [name = default] = Optional, <name = default> = Required"
@@ -45,7 +45,7 @@ export class HelpCommand extends DiscordCommand {
     this.msg.channel.send(this.GetHelpPage(page, GameCommandsOBJ)).then(
       //@ts-ignore
       (m: Discord.Message) => {
-        m.delete(this.responseTime);
+        m.delete({ timeout: this.responseTime });
         m.react("👈").then(mr => {
           m.react("👉");
           const backWordsFilter = (
@@ -65,13 +65,13 @@ export class HelpCommand extends DiscordCommand {
           });
 
           backWords.on("collect", async mr => {
-            await mr.remove(this.msg.author).catch(e => {});
+            await mr.users.remove(this.msg.author).catch(e => {});
             if (page === 1) return;
             page--;
             m.edit(this.GetHelpPage(page, GameCommandsOBJ));
           });
           forWords.on("collect", async mr => {
-            await mr.remove(this.msg.author).catch(e => {});
+            await mr.users.remove(this.msg.author).catch(e => {});
             if (page === this.splitHelp(GameCommandsOBJ).length) return;
             page++;
             m.edit(this.GetHelpPage(page, GameCommandsOBJ));
@@ -98,7 +98,7 @@ export class HelpCommand extends DiscordCommand {
     const newSplitArrayFull = this.splitHelp(commands);
     const newSplitArraySelected = this.splitHelp(commands)[page - 1];
     // console.log(newSplitArraySelected)
-    const Msg = new Discord.RichEmbed()
+    const Msg = new Discord.MessageEmbed()
       .setTitle(
         "Help Command Keys: [name = default] = Optional, <name = default> = Required"
       )
@@ -118,10 +118,10 @@ export class HelpCommand extends DiscordCommand {
             // @ts-ignore
             command[1].args!
           )
-        : Msg.addBlankField(true);
+        : Msg.addField("\u200b", "\u200b");
 
       //TODO: add a example section
-      Msg.addBlankField();
+      Msg.addField("\u200b", "\u200b");
       logIndex = logIndex + 1;
     });
     return Msg;

@@ -41,7 +41,7 @@ export class BanksCommand extends DiscordCommand {
     );
   }
   listAvailableBanks(userData: IUserState) {
-    let Msg = new Discord.RichEmbed();
+    let Msg = new Discord.MessageEmbed();
     if (userData.level.current < 5) {
       Msg.setDescription(
         "You need to be at least level 5 to interact with banks"
@@ -67,7 +67,7 @@ export class BanksCommand extends DiscordCommand {
         [...BanksCommand.BANKS_META.map(banks => banks.hackPrice)],
         true
       )
-      .addBlankField()
+      .addField("\u200b", "\u200b")
       .addField(
         "How To Hack A Bank?",
         "hack -b <Optional Bank (Name | Number)>"

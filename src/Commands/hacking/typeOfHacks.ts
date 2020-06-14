@@ -3,7 +3,7 @@ import { LearnCommand } from "../guide/learnHackCommands";
 export class TypeOfHacks {
   hackTypes = [this.guessTheCommand];
   constructor(
-    public msConstruct: Discord.RichEmbed,
+    public msConstruct: Discord.MessageEmbed,
     public questionMsg: Discord.Message,
     public hacker: Discord.User,
     public difficulty: number
