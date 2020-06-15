@@ -1,2 +1,2 @@
-web: node dist/server.ts
-worker: node dist/discordBot.ts
+web: node dist/server
+worker: node dist/discordBot
