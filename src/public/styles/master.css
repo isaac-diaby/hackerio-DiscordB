@@ -1,0 +1,47 @@
+body {
+    background-color: #050f2e;
+    margin: 0;
+    height: 100vh;
+    overflow: hidden;
+    color: #be9e6b;
+}
+.container.links .link  {
+    text-decoration: none;
+    color: inherit;
+    font-size: 2rem;
+    padding: 1rem;
+    margin: 1rem;
+    transition: box-shadow 0.3s cubic-bezier(.25,.8,.25,1);
+}
+
+.container.links > .link:hover{
+    box-shadow: 0 10px 20px rgba(190, 158, 107,.19), 0 6px 6px rgba(190, 158, 107,.23);
+}
+
+footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    font-size: 2em;
+    margin: -1rem 0;
+}
+footer a {
+    text-decoration: none;
+    color: inherit;
+}
+.container {
+    height: -webkit-fill-available;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+.container .headline {
+    margin: 0;
+    font-size: 3rem;
+}
+.container > .NextStep,.errorMsg {
+    margin: 0.5rem 0;
+    font-size: 1.5rem;
+}

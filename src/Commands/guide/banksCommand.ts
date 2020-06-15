@@ -30,6 +30,7 @@ export class BanksCommand extends DiscordCommand {
     UserMD.findOne({ userID: message.author.id }).then(
       (userData: IUserState) => {
         switch (this.args[0]) {
+          case "list":
           case "ls":
             this.listAvailableBanks(userData);
             break;

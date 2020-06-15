@@ -171,10 +171,9 @@ export class RigisterUser {
           .setTitle("New Profile Created!")
           .setDescription(
             `Welcome Hacker, We are excited to have you as a member, Type ${
-              process.env.BOT_PREFIX
+            process.env.BOT_PREFIX
             }help FOR HELP and good luck on your adventure. (Discord Direct Message based game)`
           )
-          // .addField("discordbots.org", "http://bit.ly/HIOdiscordBots")
           .addField(
             "Join The Official Serverr",
             "http://bit.ly/CGBofficialServer"
@@ -185,24 +184,26 @@ export class RigisterUser {
           )
           .addField("New Players", [
             `1. You execute commands with the following prefix: ${
-              process.env.BOT_PREFIX
+            process.env.BOT_PREFIX
             }`,
             `2. Execute ${
-              process.env.BOT_PREFIX
+            process.env.BOT_PREFIX
             }help - this is all the in-game commands`,
             `3. Execute ${
-              process.env.BOT_PREFIX
+            process.env.BOT_PREFIX
             }stat - this shows information about you! (don't share your Ip cuz you can't change it yet!`,
             `4. Execute ${
-              process.env.BOT_PREFIX
+            process.env.BOT_PREFIX
             }learn - get to know some of the commands that will help you get a better chance in your hacks. (very userful!)`,
             `4. Execute ${
-              process.env.BOT_PREFIX
+            process.env.BOT_PREFIX
             }hack -u -r - This will be your first random user hack, good luck!`,
             "5. your all set to explore, hack, take part in events and play mini-games."
           ])
           .setFooter(
-            "For more features and exclusive bonuses, become a Donater!: http://bit.ly/HIOdonate"
+            `For more features and exclusive bonuses, become a Elite, first month is free!: ${
+            process.env.BOT_PREFIX
+            }elite `
           );
         this.channel.send(successfulNewAccountMSG);
       })

@@ -16,6 +16,12 @@ const userSchema = new Schema({
     required: true,
     index: true
   },
+  custumerID: {
+    type: String,
+    unique: true,
+    index: true,
+    default: null
+  },
   log: {
     type: [logSchema],
     default: []
@@ -64,6 +70,7 @@ export interface Ilog {
 
 export interface IUserState {
   userID: string;
+  custumerID: string;
   ip: string;
   online: Boolean;
   log: Ilog[];

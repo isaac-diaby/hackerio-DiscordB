@@ -3,6 +3,7 @@ import { DiscordCommand } from "../DiscordCommand";
 import { IUserState, UserMD, Ilog } from "../../Models/userState";
 import { BanksCommand, IbankMeta } from "../guide/banksCommand";
 import { TypeOfHacks } from "./typeOfHacks";
+import { env } from "process";
 
 export interface Ieffects {
   winChanceAlt: number;
@@ -20,17 +21,19 @@ export class HackCommand extends DiscordCommand {
     UserMD.findOne({ userID: message.author.id }).then(
       async (userData: IUserState) => {
         switch (this.args[0]) {
-          case "-b" || "-bank":
+          case "-bank":
+          case "-b":
             await this.hackBankInit(userData);
             break;
-          case "-u" || "-user":
+          case "-user":
+          case "-u":
             await this.hackUserInit(userData);
             break;
-          case "-t":
-            await this.hackTypingPercentage(1, 1);
-            break;
+          // case "-t":
+          //   await this.hackTypingPercentage(1, 1);
+          //   break;
           default:
-            await message.channel.send("hack (-b | -u)");
+            await message.channel.send("hack (-bank || -user)");
             break;
         }
       }
@@ -49,7 +52,9 @@ export class HackCommand extends DiscordCommand {
             .setTitle("Couldn't Find A Random Player.")
             .addField(
               "Solution: Get More people to Register",
-              "http://bit.ly/HIOinvite"
+              `For more features and exclusive bonuses, become a Elite, first month is free!: ${
+              process.env.BOT_PREFIX
+              }elite `
             )
         );
       selectedIp = randomUser.ip;
@@ -60,7 +65,7 @@ export class HackCommand extends DiscordCommand {
     if (enemyData == null) {
       await this.msg.channel.send(
         `Could not find user offline with an ip of ${selectedIp}. Please enter a valid ip or random. \n${
-          process.env.BOT_PREFIX
+        process.env.BOT_PREFIX
         }hack -u <ip = ip | (-r | random)> `
       );
       return;
@@ -118,9 +123,9 @@ export class HackCommand extends DiscordCommand {
       time: Date.now(),
       des: `You ${
         !won ? "Successfully Won" : "Unfortunately Lost"
-      } The Defence! ${
+        } The Defence! ${
         !won ? "Atackers IP: " + userData.ip : "Someone hacked you"
-      } `,
+        } `,
       cashDif: 0
     };
     let XpGained;
@@ -388,7 +393,7 @@ export class HackCommand extends DiscordCommand {
     if (userData.crypto < bankDetails.hackPrice) {
       await this.msg.channel.send(
         `You need to at least have ${
-          bankDetails.hackPrice
+        bankDetails.hackPrice
         } crypto's in your account`
       );
       return;
@@ -473,7 +478,7 @@ export class HackCommand extends DiscordCommand {
   ) {
     const bankOffering = Math.round(
       bankDetails.hackPrice * CEB +
-        bankDetails.hackPrice * (listedEffected.winChanceAlt / 100)
+      bankDetails.hackPrice * (listedEffected.winChanceAlt / 100)
     );
     let myFinalMoney: number = userData.crypto;
     let myFinalXp: number = userData.level.xp;
@@ -503,7 +508,7 @@ export class HackCommand extends DiscordCommand {
         time: Date.now(),
         des: `You ${
           won ? "Successfully Won" : "Unfortunately Lost"
-        } The Hack against: ${bankDetails.name} Bank `,
+          } The Hack against: ${bankDetails.name} Bank `,
         cashDif: bankOffering
       },
       !won
@@ -512,14 +517,14 @@ export class HackCommand extends DiscordCommand {
   }
 
   /**
-   * Isaac M Diaby
+   * Send a question 
    * @param enemyLevel
    * @param myLevel
    */
   async hackTypingPercentage(enemyLevel: number, myLevel: number) {
     const additionalRounds =
       enemyLevel > myLevel && enemyLevel - myLevel > 9
-        ? Math.ceil((enemyLevel - myLevel) * 0.1)
+        ? Math.ceil((enemyLevel - myLevel) * 0.1) // Make the hack a bit longer cause the enemy player is better
         : 0;
     const rounds = 5 + additionalRounds;
     let difficulty;
@@ -546,7 +551,7 @@ export class HackCommand extends DiscordCommand {
         this.msg.author,
         difficulty
       );
-      CorrentAnswers += (await hackingTypes.randomHackType()) ? 1 : 0;
+      CorrentAnswers += (await hackingTypes.randomHackType()) ? 1 : 0; // Correctly ans the question 
     }
     const percentage = Math.round((CorrentAnswers / rounds) * 100) / 100;
     questionMsg.delete({ timeout: 60000 });

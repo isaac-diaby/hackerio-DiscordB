@@ -16,6 +16,7 @@ export class LeaveGameCommand extends DiscordCommand {
       this.userData = userData;
       switch (cmdArguments[0]) {
         case "game":
+        case "g":
           this.leaveGame();
           break;
         default:

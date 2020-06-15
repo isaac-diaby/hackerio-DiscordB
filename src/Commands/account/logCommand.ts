@@ -17,8 +17,14 @@ export class LogCommand extends DiscordCommand {
     UserMD.findOne({ userID: message.author.id }).then(
       async (userData: IUserState) => {
         switch (this.args[0]) {
+          case "-delete":
+            this.deleteLog(userData.log, userData.userID);
+            break;
           case "-d":
             this.deleteLog(userData.log, userData.userID);
+            break;
+          case "-open":
+            this.openLog(userData.log);
             break;
           case "-o":
             this.openLog(userData.log);

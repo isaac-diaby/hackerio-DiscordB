@@ -1,0 +1,17 @@
+<div class="container">
+    <h1 class="headline">Payment canceled</h1>
+
+    {{#eq errorCode "checkoutSessionID"}}
+        <p class="errorMsg">Invalid Checkout Session ID</p>
+    {{else eq errorCode "subscriptionNotActive"}}
+            <p class="errorMsg">Subscription is not active </p>
+        {{!-- {{#eq errorCode "subscriptionNotActive"}}
+            <p class="errorMsg">Subscription is not active </p>
+        {{else}} --}}
+        {{else}}
+            <p class="errorMsg"> There was an error</p>
+        {{!-- {{/eq}} --}}
+    {{/eq}}
+
+    <p class="NextStep"> Please contact a member of the team our official server.</p>
+</div>

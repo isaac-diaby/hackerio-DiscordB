@@ -45,7 +45,7 @@ export class DiscordBotRun {
     this.botClient = new Discord.Client();
     this.botClient.login(process.env.BOT_AUTHTOKEN);
     this.botClient.on("ready", () => {
-      if (process.env.PRODUCTION)
+      if (process.env.PRODUCTION == "True")
         this.botClient.user.setActivity(
           `Hackers |  ${process.env.BOT_PREFIX}register | v${
             process.env.BOT_VERSION
@@ -58,7 +58,7 @@ export class DiscordBotRun {
       try {
         blapi.handle(this.botClient, this.apiKeys, 15);
       } catch (err) {
-        console.error("FAILED to push bot stats");
+        console.error("FAILED to push bot stats", "handle() undefined in DiscordBot.ts");
       }
       console.log(`${this.botClient.user.username} is online`);
       // set all users to offline
@@ -69,7 +69,6 @@ export class DiscordBotRun {
         }
       ).exec();
 
-      // console.log(DiscordBotRun.LevelSystemXp)
       this.botOnlineListen();
     });
   }
@@ -195,3 +194,5 @@ export class DiscordBotRun {
     Msg.channel.send(primaryCmdErrorMSG);
   }
 }
+
+// ©Isaac Diaby 2019

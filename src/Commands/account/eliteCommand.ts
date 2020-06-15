@@ -2,9 +2,12 @@ import * as Discord from "discord.js";
 import { DiscordCommand } from "../DiscordCommand";
 import { UserMD, IUserState } from "../../Models/userState";
 import Stripe from "stripe";
-const stripe = new Stripe(process.env.STRIPE_TOKEN, {
+import { SubscriptionMD } from "../../Models/subscriptionState";
+const stripe = new Stripe(process.env.STRIPE_STOKEN, {
   apiVersion: "2020-03-02"
 });
+const domain = (process.env.PRODUCTION == "True") ? "https://hacker-io-discord.herokuapp.com/" : "http://localhost"
+const port = 3000
 
 export interface IhackingScripts {
   primaryCmd: string;
@@ -22,12 +25,15 @@ export class EliteCommand extends DiscordCommand {
     UserMD.findOne({ userID: message.author.id }).then(
       (userData: IUserState) => {
         switch (this.args[0]) {
-          case "-j":
-            this.joinElite(userData.userID, userData.playerStat.elite);
-            break;
           case "-join":
-            this.joinElite(userData.userID, userData.playerStat.elite);
+          case "-j":
+            this.joinElite(userData.userID, userData.playerStat.elite, userData.custumerID);
             break;
+
+          case "-cancel":
+          case "-c":
+            this.cancelElite(userData);
+            break
           default:
             const Msg = new Discord.MessageEmbed()
               .setColor("#1E90FF")
@@ -42,7 +48,7 @@ export class EliteCommand extends DiscordCommand {
 
               .setFooter(
                 `To join the elte list type ${
-                  process.env.BOT_PREFIX
+                process.env.BOT_PREFIX
                 }elite -join`
               );
             this.sendMsgViaDm(Msg);
@@ -51,8 +57,26 @@ export class EliteCommand extends DiscordCommand {
       }
     );
   }
-  joinElite(userID: string, alreadyElite: Boolean) {
-    if (alreadyElite) return this.msg.reply("You Are Already Elite!");
+
+  /**
+   * create a cancel subscription function
+   * @param userData 
+   */
+  private cancelElite(userData: IUserState) {
+    if (userData.custumerID) {
+      SubscriptionMD.findOne({
+        custumerID: userData.custumerID
+      }).then((Subscription) => this.sendMsgViaDm(`${domain}:${port}/subscription/cancel/${Subscription.subscriptionID}`).then(msg => msg.delete({ timeout: 300000 }))
+      );
+
+    }
+  }
+
+  async joinElite(userID: string, alreadyElite: Boolean, custumerID: string = undefined) {
+    if (alreadyElite) return this.msg.reply(new Discord.MessageEmbed()
+      .setColor("#60BE82")
+      .setDescription("You Are Already Elite!")
+      .setFooter("Cancel at any time with elite -cancel"));
 
     const Msg = new Discord.MessageEmbed()
       .setColor("#60BE82")
@@ -65,40 +89,70 @@ export class EliteCommand extends DiscordCommand {
       this.msg.author.id
     );
     if (isUserInOfficialServer !== undefined) {
-      // prod_HSUluY1kPdL9Ug
+      //  Check if already payed
+      let subscriptionData = await SubscriptionMD.findOne({
+        custumerID
+      })
+      if (!subscriptionData?.subscriptionID) {
 
-      stripe.checkout.sessions.create({
-        success_url: "https://example.com/success",
-        cancel_url: "https://example.com/cancel",
-        payment_method_types: ["card"],
-        line_items: [
-          {
-            price: "price_1GtZmRJEPnKOpGNRK2GrYKnC",
-            quantity: 1
-          }
-        ]
-      });
-      stripe.paymentIntents
-        .create({
-          amount: 199,
-          currency: "gbp",
-          payment_method_types: ["card"],
-          metadata: { discordID: userID }
-        })
-        .then(paymentIntent => {
-          console.log(paymentIntent);
-        })
-        .then(() => {
-          // HackerIO Elite == 605180133535645745
-          if (
-            !isUserInOfficialServer.roles.cache.has(
-              this.mainGuildData.roles.elite
-            )
+        if (custumerID == undefined) {
+          // Create a new customer 
+          custumerID = await stripe.customers.create({ metadata: { discordID: userID } }
+            , { idempotencyKey: userID }
+          ).then(
+            newCustomer => {
+              return UserMD.findOneAndUpdate({ userID }, { custumerID: newCustomer.id }).exec().then(() => newCustomer.id)
+            }
           )
-            return this.msg.channel.send(Msg);
-          EliteCommand.altEliteStatus(userID, true, this.msg.author);
-        })
-        .catch(err => console.log(err));
+        }
+        if (!subscriptionData) {
+          subscriptionData = await new SubscriptionMD({
+            custumerID
+          }).save()
+
+        }
+        stripe.checkout.sessions.create({
+          success_url: `${domain}:${port}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
+          cancel_url: `${domain}:${port}/payment/cancel`,
+          payment_method_types: ["card"],
+          mode: "subscription",
+          customer: custumerID,
+          client_reference_id: userID,
+          metadata: { discordID: userID },
+          line_items: [
+            {
+              price: "price_1GtZmRJEPnKOpGNRK2GrYKnC",
+              quantity: 1
+            }
+          ],
+          subscription_data: {
+            coupon: 'b6koFEwj',
+          },
+        }
+          , {
+            idempotencyKey: subscriptionData.id
+          }
+        )
+          .then(paymentSession => {
+
+            this.sendMsgViaDm(`${domain}:${port}/payment?checkout_session_id=${paymentSession.id}`).then(msg => msg.delete({ timeout: 300000 }))
+          })
+          .catch(err => this.sendMsgViaDm(`ERROR: ${err.raw.message}. Please Contact a developer in the support server. http://bit.ly/CGBofficialServer`, this.msg.author, false));
+      } else {
+        // HackerIO Elite == 605180133535645745
+        await isUserInOfficialServer.roles.add(this.mainGuildData.roles.elite, "Paid for elite status")
+        if (
+          !isUserInOfficialServer.roles.cache.has(
+            this.mainGuildData.roles.elite
+          )
+        )
+          return this.msg.channel.send(Msg);
+        // You need the elite role in the server.
+        EliteCommand.altEliteStatus(userID, true, this.msg.author);
+
+      }
+
+
     } else {
       this.msg.channel.send(Msg);
     }
@@ -109,12 +163,11 @@ export class EliteCommand extends DiscordCommand {
       .setTitle("Elite Update")
       .setAuthor(user.tag, user.avatarURL());
     isElite
-      ? Msg.setDescription("Welcome to the elite ⚔.")
-          .setFooter("Cancel at any time with elite -c")
-          .setColor("#60BE82")
-      : Msg.setDescription("Expired Membership to elite ⌛")
-          .addField("Rejoin", "http://bit.ly/HIOdonate")
-          .setFooter("Then type elite -j command again to active Elite");
+      ? Msg.setDescription("Welcome to the elite ⚔")
+        .setFooter("Cancel at any time with elite -cancel")
+        .setColor("#60BE82")
+      : Msg.setDescription("Expired Elite Membership ⌛")
+        .setFooter("To rejoin type the elite -join command to re-active your Elite status");
     UserMD.findOneAndUpdate(
       { userID },
       {
@@ -137,12 +190,12 @@ export class EliteCommand extends DiscordCommand {
     // @ts-ignore
     if (userData.playerStat.eliteExpireDate <= Date.now().valueOf()) {
       // membership expired
-      isUserInOfficialServer.roles
+      isUserInOfficialServer?.roles
         .remove("605180133535645745", "Membership has expired")
         .catch(e =>
           console.log(
             e +
-              ": Tried to remove elite role from someone high up or doesnt exist"
+            ": Tried to remove elite role from someone high up or doesnt exist"
           )
         );
       return EliteCommand.altEliteStatus(user.id, false, user);
@@ -153,7 +206,7 @@ export class EliteCommand extends DiscordCommand {
         isUserInOfficialServer.roles
           .remove("605180133535645745", "Membership has expired")
           .catch(e =>
-            console.log("tried to remove elite role from someone high up")
+            console.log("Tried to remove elite role from someone high up")
           );
         return EliteCommand.altEliteStatus(user.id, false, user);
       }

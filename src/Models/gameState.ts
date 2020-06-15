@@ -26,7 +26,8 @@ const GameMetaDataSchema = new Schema(
 );
 const GameSchema = new Schema({
   meta: GameMetaDataSchema,
-  onGoing: { type: Boolean, default: true }
+  onGoing: { type: Boolean, default: true },
+  startedAt: { type: Date, default: Date.now },
 });
 
 export interface IGameMetaInfo {
@@ -51,6 +52,7 @@ export interface IGameMetaData {
 export interface IGameData {
   meta: IGameMetaData;
   onGoing: Boolean;
+  startedAt: Date;
 }
 interface IGameDataDoc extends Document, IGameData {}
 

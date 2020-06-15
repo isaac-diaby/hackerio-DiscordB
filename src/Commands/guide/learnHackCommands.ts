@@ -700,7 +700,7 @@ export class LearnCommand extends DiscordCommand {
     super(client, message, cmdArguments);
     let page: number;
     try {
-      // tries to get the page number
+      // try to get the page number
       page = this.args[0] !== undefined ? parseInt(this.args[0], 10) : 1;
       this.openLearningBook(page);
     } catch (e) {

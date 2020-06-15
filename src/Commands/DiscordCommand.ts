@@ -43,7 +43,7 @@ export abstract class DiscordCommand {
     if (this.msg.channel.type === "text" && shouldNotifyUser)
       this.msg.reply(
         "Check Your Direct Messages, i sent you the information there."
-      );
+      ).then(msg => msg.delete({ timeout: 300000 }));
     return user.send(message).catch(e => {
       this.msg.channel.send(
         new Discord.MessageEmbed().setDescription(

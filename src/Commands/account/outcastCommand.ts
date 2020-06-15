@@ -15,6 +15,7 @@ export class OutCastCommand extends DiscordCommand {
     UserMD.findOne({ userID: message.author.id }).then(
       (userData: IUserState) => {
         switch (this.args[0]) {
+          case "-pay":
           case "-p":
             if (userData.playerStat.outcast) return this.outcastPay(userData);
             this.msg.channel.send(
@@ -37,7 +38,7 @@ export class OutCastCommand extends DiscordCommand {
               .setFooter(
                 `To get off the outcast list type ${
                   process.env.BOT_PREFIX
-                }outcast -p`
+                }outcast -pay`
               );
             this.msg.channel.send(Msg);
             return;
