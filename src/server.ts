@@ -11,7 +11,7 @@ export class ServerRun {
   constructor() {
     const app = express();
     const port = process.env.PORT || 3000;
-    const domain = (process.env.PRODUCTION == "True") ? "https://hacker-io-discord.herokuapp.com/" : "http://localhost"
+    const domain = (process.env.PRODUCTION == "True") ? "https://hacker-io-discord.herokuapp.com/" : `http://localhost:${port}`
 
     app.set('views', "src/views")
 
@@ -19,8 +19,9 @@ export class ServerRun {
     app.engine('hbs', exphbs({ extname: ".hbs" }));
     app.set('view engine', 'hbs');
     
-
-    app.use(express.static(path.join(__dirname, '/public')));
+    (process.env.PRODUCTION == "True") ? 
+    app.use(express.static(path.join(__dirname, '../src/public'))) :
+    app.use(express.static(path.join(__dirname, '/public')))
 
     app.get("/", (req, res) => {
      res.render("home")
@@ -83,12 +84,12 @@ export class ServerRun {
     });
   
     app.listen(port, () =>
-      console.log(`API app listening at ${domain}:${port}`)
+      console.log(`API app listening at ${domain}`)
     );
   }
 }
 
-// require('dotenv').config()
+require('dotenv').config()
 import { Database } from "./Database";
 
 

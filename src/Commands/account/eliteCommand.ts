@@ -6,8 +6,8 @@ import { SubscriptionMD } from "../../Models/subscriptionState";
 const stripe = new Stripe(process.env.STRIPE_STOKEN, {
   apiVersion: "2020-03-02"
 });
-const domain = (process.env.PRODUCTION == "True") ? "https://hacker-io-discord.herokuapp.com" : "http://localhost"
 const port = process.env.PORT || 3000
+const domain = (process.env.PRODUCTION == "True") ? "https://hacker-io-discord.herokuapp.com" : `http://localhost:${port}`
 
 export interface IhackingScripts {
   primaryCmd: string;
@@ -66,7 +66,7 @@ export class EliteCommand extends DiscordCommand {
     if (userData.custumerID) {
       SubscriptionMD.findOne({
         custumerID: userData.custumerID
-      }).then((Subscription) => this.sendMsgViaDm(`${domain}:${port}/subscription/cancel/${Subscription.subscriptionID}`).then(msg => msg.delete({ timeout: 300000 }))
+      }).then((Subscription) => this.sendMsgViaDm(`${domain}/subscription/cancel/${Subscription.subscriptionID}`).then(msg => msg.delete({ timeout: 300000 }))
       );
 
     }
@@ -112,8 +112,8 @@ export class EliteCommand extends DiscordCommand {
 
         }
         stripe.checkout.sessions.create({
-          success_url: `${domain}:${port}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
-          cancel_url: `${domain}:${port}/payment/cancel`,
+          success_url: `${domain}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
+          cancel_url: `${domain}/payment/cancel`,
           payment_method_types: ["card"],
           mode: "subscription",
           customer: custumerID,
@@ -135,7 +135,7 @@ export class EliteCommand extends DiscordCommand {
         )
           .then(paymentSession => {
 
-            this.sendMsgViaDm(`${domain}:${port}/payment?checkout_session_id=${paymentSession.id}`).then(msg => msg.delete({ timeout: 300000 }))
+            this.sendMsgViaDm(`${domain}/payment?checkout_session_id=${paymentSession.id}`).then(msg => msg.delete({ timeout: 300000 }))
           })
           .catch(err => this.sendMsgViaDm(`ERROR: ${err.raw.message}. Please Contact a developer in the support server. http://bit.ly/CGBofficialServer`, this.msg.author, false));
       } else {
