@@ -6,8 +6,8 @@ import { SubscriptionMD } from "../../Models/subscriptionState";
 const stripe = new Stripe(process.env.STRIPE_STOKEN, {
   apiVersion: "2020-03-02"
 });
-const domain = (process.env.PRODUCTION == "True") ? "https://hacker-io-discord.herokuapp.com/" : "http://localhost"
-const port = 3000
+const domain = (process.env.PRODUCTION == "True") ? "https://hacker-io-discord.herokuapp.com" : "http://localhost"
+const port = process.env.PORT || 3000
 
 export interface IhackingScripts {
   primaryCmd: string;
@@ -121,12 +121,12 @@ export class EliteCommand extends DiscordCommand {
           metadata: { discordID: userID },
           line_items: [
             {
-              price: "price_1GtZmRJEPnKOpGNRK2GrYKnC",
+              price:  (process.env.PRODUCTION == "True") ? "price_1GuIskJEPnKOpGNRHxFzGYTr" : "price_1GtZmRJEPnKOpGNRK2GrYKnC",
               quantity: 1
             }
           ],
           subscription_data: {
-            coupon: 'b6koFEwj',
+            coupon: (process.env.PRODUCTION == "True") ? 'welcomeToElite' : 'b6koFEwj',
           },
         }
           , {

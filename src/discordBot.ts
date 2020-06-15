@@ -195,4 +195,11 @@ export class DiscordBotRun {
   }
 }
 
+
+// require('dotenv').config()
+import { Database } from "./Database";
+
+
+new Database();
+new DiscordBotRun();
 // ©Isaac Diaby 2019

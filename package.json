@@ -7,7 +7,9 @@
   "description": "Hacker.io is a discord bot that simulates a hacking online game",
   "main": "src/index.ts",
   "scripts": {
-    "start": "nodemon --watch 'src/**/*.ts' --ignore 'src/**/*.spec.ts' --exec ts-node src/index.ts",
+    "start": "ts-node src/discordBot.ts & ts-node src/server.ts",
+    "start-bot": "nodemon --watch 'src/**/*.ts' --ignore 'src/**/*.spec.ts' --exec ts-node src/discordBot.ts",
+    "start-server": "nodemon --watch 'src/**/*.ts' --ignore 'src/**/*.spec.ts' --exec ts-node src/server.ts",
     "build": "tsc -p ."
   },
   "dependencies": {

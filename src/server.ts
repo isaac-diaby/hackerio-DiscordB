@@ -10,7 +10,7 @@ const stripe = new Stripe(process.env.STRIPE_STOKEN, {
 export class ServerRun {
   constructor() {
     const app = express();
-    const port = 3000;
+    const port = process.env.PORT || 3000;
     const domain = (process.env.PRODUCTION == "True") ? "https://hacker-io-discord.herokuapp.com/" : "http://localhost"
 
     app.set('views', "src/views")
@@ -87,4 +87,12 @@ export class ServerRun {
     );
   }
 }
+
+// require('dotenv').config()
+import { Database } from "./Database";
+
+
+new Database();
+new ServerRun();
+
 // ©Isaac Diaby 2019
