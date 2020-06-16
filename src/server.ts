@@ -89,7 +89,7 @@ export class ServerRun {
   }
 }
 
-require('dotenv').config()
+// require('dotenv').config()
 import { Database } from "./Database";
 
 

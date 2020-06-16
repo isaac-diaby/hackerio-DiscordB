@@ -66,8 +66,12 @@ export class EliteCommand extends DiscordCommand {
     if (userData.custumerID) {
       SubscriptionMD.findOne({
         custumerID: userData.custumerID
-      }).then((Subscription) => this.sendMsgViaDm(`${domain}/subscription/cancel/${Subscription.subscriptionID}`).then(msg => msg.delete({ timeout: 300000 }))
-      );
+      }).then((Subscription) => this.sendMsgViaDm(`${domain}/subscription/cancel/${Subscription.subscriptionID}`)
+          .then(msg => msg.delete({ timeout: 300000 }))
+      
+  
+      ).catch(e => this.sendMsgViaDm("You dont have an active subscription")
+      .then(msg => msg.delete({ timeout: 300000 })))
 
     }
   }
