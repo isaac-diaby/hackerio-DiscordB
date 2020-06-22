@@ -1,4 +1,5 @@
 import express from "express";
+import newrelic from "newrelic";
 import exphbs from "express-handlebars";
 import { Stripe } from "stripe";
 import { SubscriptionMD } from "./Models/subscriptionState";
