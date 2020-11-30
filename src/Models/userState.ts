@@ -9,6 +9,15 @@ const logSchema = new Schema(
   },
   { _id: false }
 );
+
+export function uuidv4() {
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
+    var r = (Math.random() * 16) | 0,
+      v = c === "x" ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+}
+
 const userSchema = new Schema({
   userID: {
     type: String,
@@ -103,16 +112,8 @@ export interface IUserState {
 export interface IUserStateDoc extends IUserState, Document {}
 
 // all instances will have acces to this when doing UserMD.findOne().byUserID('usersID')
-userSchema.statics.byUserID = function(userID: string, cb: void) {
+userSchema.statics.byUserID = function (userID: string, cb: void) {
   return this.findOne({ userID }, cb);
 };
 
 export const UserMD: Model<IUserStateDoc> = model("User", userSchema, "Users");
-
-export function uuidv4() {
-  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
-    var r = (Math.random() * 16) | 0,
-      v = c === "x" ? r : (r & 0x3) | 0x8;
-    return v.toString(16);
-  });
-}

@@ -4,10 +4,13 @@ import { UserMD, IUserState } from "../../Models/userState";
 import Stripe from "stripe";
 import { SubscriptionMD } from "../../Models/subscriptionState";
 const stripe = new Stripe(process.env.STRIPE_STOKEN, {
-  apiVersion: "2020-03-02"
+  apiVersion: "2020-08-27"
 });
-const port = process.env.PORT || 3000
-const domain = (process.env.PRODUCTION == "True") ? "https://hacker-io-discord.herokuapp.com" : `http://localhost:${port}`
+const port = process.env.PORT || 3000;
+const domain =
+  process.env.PRODUCTION == "True"
+    ? "https://hacker-io-discord.herokuapp.com"
+    : `http://localhost:${port}`;
 
 export interface IhackingScripts {
   primaryCmd: string;
@@ -27,13 +30,17 @@ export class EliteCommand extends DiscordCommand {
         switch (this.args[0]) {
           case "-join":
           case "-j":
-            this.joinElite(userData.userID, userData.playerStat.elite, userData.custumerID);
+            this.joinElite(
+              userData.userID,
+              userData.playerStat.elite,
+              userData.custumerID
+            );
             break;
 
           case "-cancel":
           case "-c":
             this.cancelElite(userData);
-            break
+            break;
           default:
             const Msg = new Discord.MessageEmbed()
               .setColor("#1E90FF")
@@ -47,9 +54,7 @@ export class EliteCommand extends DiscordCommand {
               ])
 
               .setFooter(
-                `To join the elte list type ${
-                process.env.BOT_PREFIX
-                }elite -join`
+                `To join the elte list type ${process.env.BOT_PREFIX}elite -join`
               );
             this.sendMsgViaDm(Msg);
             return;
@@ -60,27 +65,38 @@ export class EliteCommand extends DiscordCommand {
 
   /**
    * create a cancel subscription function
-   * @param userData 
+   * @param userData
    */
   private cancelElite(userData: IUserState) {
     if (userData.custumerID) {
       SubscriptionMD.findOne({
         custumerID: userData.custumerID
-      }).then((Subscription) => this.sendMsgViaDm(`${domain}/subscription/cancel/${Subscription.subscriptionID}`)
-          .then(msg => msg.delete({ timeout: 300000 }))
-      
-  
-      ).catch(e => this.sendMsgViaDm("You dont have an active subscription")
-      .then(msg => msg.delete({ timeout: 300000 })))
-
+      })
+        .then((Subscription: { subscriptionID: any }) =>
+          this.sendMsgViaDm(
+            `${domain}/subscription/cancel/${Subscription.subscriptionID}`
+          ).then((msg) => msg.delete({ timeout: 300000 }))
+        )
+        .catch((e: any) =>
+          this.sendMsgViaDm(
+            "You dont have an active subscription"
+          ).then((msg) => msg.delete({ timeout: 300000 }))
+        );
     }
   }
 
-  async joinElite(userID: string, alreadyElite: Boolean, custumerID: string = undefined) {
-    if (alreadyElite) return this.msg.reply(new Discord.MessageEmbed()
-      .setColor("#60BE82")
-      .setDescription("You Are Already Elite!")
-      .setFooter("Cancel at any time with elite -cancel"));
+  async joinElite(
+    userID: string,
+    alreadyElite: Boolean,
+    custumerID: string = undefined
+  ) {
+    if (alreadyElite)
+      return this.msg.reply(
+        new Discord.MessageEmbed()
+          .setColor("#60BE82")
+          .setDescription("You Are Already Elite!")
+          .setFooter("Cancel at any time with elite -cancel")
+      );
 
     const Msg = new Discord.MessageEmbed()
       .setColor("#60BE82")
@@ -96,55 +112,77 @@ export class EliteCommand extends DiscordCommand {
       //  Check if already payed
       let subscriptionData = await SubscriptionMD.findOne({
         custumerID
-      })
+      });
       if (!subscriptionData?.subscriptionID) {
-
-        if (custumerID == undefined) {
-          // Create a new customer 
-          custumerID = await stripe.customers.create({ metadata: { discordID: userID } }
-            , { idempotencyKey: userID }
-          ).then(
-            newCustomer => {
-              return UserMD.findOneAndUpdate({ userID }, { custumerID: newCustomer.id }).exec().then(() => newCustomer.id)
-            }
-          )
+        if (custumerID === undefined) {
+          // Create a new customer
+          custumerID = await stripe.customers
+            .create(
+              { metadata: { discordID: userID } },
+              { idempotencyKey: userID }
+            )
+            .then((newCustomer) => {
+              return UserMD.findOneAndUpdate(
+                { userID },
+                { custumerID: newCustomer.id }
+              )
+                .exec()
+                .then(() => newCustomer.id);
+            });
         }
         if (!subscriptionData) {
           subscriptionData = await new SubscriptionMD({
             custumerID
-          }).save()
-
+          }).save();
         }
-        stripe.checkout.sessions.create({
-          success_url: `${domain}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
-          cancel_url: `${domain}/payment/cancel`,
-          payment_method_types: ["card"],
-          mode: "subscription",
-          customer: custumerID,
-          client_reference_id: userID,
-          metadata: { discordID: userID },
-          line_items: [
+        stripe.checkout.sessions
+          .create(
             {
-              price:  (process.env.PRODUCTION == "True") ? "price_1GuIskJEPnKOpGNRHxFzGYTr" : "price_1GtZmRJEPnKOpGNRK2GrYKnC",
-              quantity: 1
+              success_url: `${domain}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
+              cancel_url: `${domain}/payment/cancel`,
+              payment_method_types: ["card"],
+              mode: "subscription",
+              customer: custumerID,
+              client_reference_id: userID,
+              metadata: { discordID: userID },
+              line_items: [
+                {
+                  price:
+                    process.env.PRODUCTION == "True"
+                      ? "price_1GuIskJEPnKOpGNRHxFzGYTr"
+                      : "price_1GtZmRJEPnKOpGNRK2GrYKnC",
+                  quantity: 1
+                }
+              ],
+              subscription_data: {
+                coupon:
+                  process.env.PRODUCTION == "True"
+                    ? "welcomeToElite"
+                    : "b6koFEwj"
+              }
+            },
+            {
+              idempotencyKey: subscriptionData.id
             }
-          ],
-          subscription_data: {
-            coupon: (process.env.PRODUCTION == "True") ? 'welcomeToElite' : 'b6koFEwj',
-          },
-        }
-          , {
-            idempotencyKey: subscriptionData.id
-          }
-        )
-          .then(paymentSession => {
-
-            this.sendMsgViaDm(`${domain}/payment?checkout_session_id=${paymentSession.id}`).then(msg => msg.delete({ timeout: 300000 }))
+          )
+          .then((paymentSession: { id: any }) => {
+            this.sendMsgViaDm(
+              `${domain}/payment?checkout_session_id=${paymentSession.id}`
+            ).then((msg) => msg.delete({ timeout: 300000 }));
           })
-          .catch(err => this.sendMsgViaDm(`ERROR: ${err.raw.message}. Please Contact a developer in the support server. http://bit.ly/CGBofficialServer`, this.msg.author, false));
+          .catch((err: { raw: { message: any } }) =>
+            this.sendMsgViaDm(
+              `ERROR: ${err.raw.message}. Please Contact a developer in the support server. http://bit.ly/CGBofficialServer`,
+              this.msg.author,
+              false
+            )
+          );
       } else {
         // HackerIO Elite == 605180133535645745
-        await isUserInOfficialServer.roles.add(this.mainGuildData.roles.elite, "Paid for elite status")
+        await isUserInOfficialServer.roles.add(
+          this.mainGuildData.roles.elite,
+          "Paid for elite status"
+        );
         if (
           !isUserInOfficialServer.roles.cache.has(
             this.mainGuildData.roles.elite
@@ -153,10 +191,7 @@ export class EliteCommand extends DiscordCommand {
           return this.msg.channel.send(Msg);
         // You need the elite role in the server.
         EliteCommand.altEliteStatus(userID, true, this.msg.author);
-
       }
-
-
     } else {
       this.msg.channel.send(Msg);
     }
@@ -168,10 +203,11 @@ export class EliteCommand extends DiscordCommand {
       .setAuthor(user.tag, user.avatarURL());
     isElite
       ? Msg.setDescription("Welcome to the elite ⚔")
-        .setFooter("Cancel at any time with elite -cancel")
-        .setColor("#60BE82")
-      : Msg.setDescription("Expired Elite Membership ⌛")
-        .setFooter("To rejoin type the elite -join command to re-active your Elite status");
+          .setFooter("Cancel at any time with elite -cancel")
+          .setColor("#60BE82")
+      : Msg.setDescription("Expired Elite Membership ⌛").setFooter(
+          "To rejoin type the elite -join command to re-active your Elite status"
+        );
     UserMD.findOneAndUpdate(
       { userID },
       {
@@ -180,7 +216,7 @@ export class EliteCommand extends DiscordCommand {
           new Date().setMonth(new Date().getMonth() + (1 % 12))
         ) // plus one month
       }
-    ).then(d => user.send(Msg));
+    ).then((d) => user.send(Msg));
   }
 
   static checkIfStillElite(
@@ -196,10 +232,10 @@ export class EliteCommand extends DiscordCommand {
       // membership expired
       isUserInOfficialServer?.roles
         .remove("605180133535645745", "Membership has expired")
-        .catch(e =>
+        .catch((e) =>
           console.log(
             e +
-            ": Tried to remove elite role from someone high up or doesnt exist"
+              ": Tried to remove elite role from someone high up or doesnt exist"
           )
         );
       return EliteCommand.altEliteStatus(user.id, false, user);
@@ -209,7 +245,7 @@ export class EliteCommand extends DiscordCommand {
       if (!isUserInOfficialServer.roles.cache.has("605180133535645745")) {
         isUserInOfficialServer.roles
           .remove("605180133535645745", "Membership has expired")
-          .catch(e =>
+          .catch((e) =>
             console.log("Tried to remove elite role from someone high up")
           );
         return EliteCommand.altEliteStatus(user.id, false, user);
