@@ -18,12 +18,7 @@
     "dotenv": "^8.2.0",
     "express": "4.17.1",
     "express-handlebars": "^4.0.4",
-<<<<<<< HEAD
     "mongoose": "^5.9.18",
-=======
-    "mongoose": "5.9.18",
-    "newrelic": "^6.9.0",
->>>>>>> cce49f934f029941eedd7f1d423cc4c78e2ab052
     "request": "^2.88.0",
     "stripe": "^8.x"
   },
