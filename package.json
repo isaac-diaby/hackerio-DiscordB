@@ -1,11 +1,11 @@
 {
   "name": "hackerio-discord",
   "version": "1.4.0",
-  "engines": {
-    "node": "14.x"
-  },
   "description": "Hacker.io is a discord bot that simulates a hacking online game",
   "main": "src/index.ts",
+  "engines": {
+    "node": "^12.x || ^14.x"
+  },
   "scripts": {
     "start": "ts-node src/discordBot.ts & ts-node src/server.ts",
     "start-bot": "nodemon --watch 'src/**/*.ts' --ignore 'src/**/*.spec.ts' --exec ts-node src/discordBot.ts",
@@ -18,7 +18,12 @@
     "dotenv": "^8.2.0",
     "express": "4.17.1",
     "express-handlebars": "^4.0.4",
+<<<<<<< HEAD
     "mongoose": "^5.9.18",
+=======
+    "mongoose": "5.9.18",
+    "newrelic": "^6.9.0",
+>>>>>>> cce49f934f029941eedd7f1d423cc4c78e2ab052
     "request": "^2.88.0",
     "stripe": "^8.x"
   },
@@ -29,6 +34,7 @@
     "@types/express-handlebars": "^3.1.0",
     "@types/node": "^11.13.5",
     "@types/node-fetch": "^2.5.7",
+    "@types/newrelic": "^6.4.0",
     "@types/ws": "^7.2.5",
     "nodemon": "^1.18.4",
     "ts-node": "^8.3.0",
@@ -39,13 +45,7 @@
     "type": "git",
     "url": "git+ssh://git@github.com/isaac-diaby/hackerio-DiscordB.git"
   },
-  "keywords": [
-    "hackerio",
-    "discord",
-    "bot",
-    "online",
-    "game"
-  ],
+  "keywords": ["hackerio", "discord", "bot", "online", "game"],
   "private": true,
   "author": "isaac-diaby <me@isaacdiaby.tech>",
   "license": "ISC",
