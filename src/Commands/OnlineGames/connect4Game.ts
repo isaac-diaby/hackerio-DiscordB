@@ -560,3 +560,4 @@ export class Connect4 extends OnlineGames {
     return board;
   }
 }
+// ©Isaac Diaby 2019

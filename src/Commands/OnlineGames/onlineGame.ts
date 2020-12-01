@@ -437,3 +437,5 @@ export abstract class OnlineGames extends DiscordCommand {
   // means that this function needs to be created in each child
   abstract GameLifeCicle(): Promise<void>;
 }
+
+// ©Isaac Diaby 2019

@@ -8,8 +8,8 @@ const GameMetaInfoSchema = new Schema(
     numPlayers: { type: Number, required: true, min: 1, max: 4 },
     imageUrl: { type: String, required: false },
     description: { type: String, required: false, lowercase: true }
-  },
-  { _id: false }
+  }
+  // ,{ _id: false }
 );
 const GameMetaDataSchema = new Schema(
   {
@@ -21,8 +21,8 @@ const GameMetaDataSchema = new Schema(
     playerIDs: { type: [String], required: true },
     channelID: { type: String, required: true },
     metaInfo: { type: GameMetaInfoSchema, required: true }
-  },
-  { _id: false }
+  }
+  // ,{ _id: false }
 );
 const GameSchema = new Schema({
   meta: GameMetaDataSchema,
@@ -50,14 +50,16 @@ export interface IGameMetaData {
 }
 
 export interface IGameData {
+  _id: Schema.Types.ObjectId
   meta: IGameMetaData;
   onGoing: Boolean;
   startedAt: Date;
 }
 interface IGameDataDoc extends Document, IGameData {}
 
-GameSchema.statics.byGameID = function(gameID: string, cb: void) {
+GameSchema.static('byGameID', function(gameID: string, cb: void) {
+  //@ts-ignore
   return this.findOne({ "meta.gameID": gameID }, cb);
-};
+})
 
 export const GameMD: Model<IGameDataDoc> = model("Game", GameSchema, "Games");

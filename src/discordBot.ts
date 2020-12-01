@@ -85,8 +85,9 @@ export class DiscordBotRun {
 
       // Must be online to play
       if (
-        receivedMessage.author.presence.status === "idle" ||
-        receivedMessage.author.presence.status === "offline"
+        false
+        // receivedMessage.author.presence.status === "idle" ||
+        // receivedMessage.author.presence.status === "offline"
       ) {
         receivedMessage.channel.send(
           new Discord.MessageEmbed()
@@ -125,8 +126,9 @@ export class DiscordBotRun {
             this.CURRENTLY_ONLINE.add(receivedMessage.author.id);
             const StatusUpdate = setInterval(() => {
               if (
-                receivedMessage.author.presence.status === "idle" ||
-                receivedMessage.author.presence.status === "offline"
+                false
+                // receivedMessage.author.presence.status === "idle" ||
+                // receivedMessage.author.presence.status === "offline"
               ) {
                 UserStatsCommand.setUserToOnline({
                   userID: receivedMessage.author.id,
@@ -196,7 +198,7 @@ export class DiscordBotRun {
 }
 
 
-// require('dotenv').config()
+require('dotenv').config()
 import { Database } from "./Database";
 
 

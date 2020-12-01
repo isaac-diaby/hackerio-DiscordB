@@ -13,14 +13,14 @@
     "build": "tsc -p ."
   },
   "dependencies": {
-    "blapi": "2.0.0",
-    "discord.js": "12.2.0",
-    "dotenv": "8.2.0",
+    "blapi": "^2.0.0",
+    "discord.js": "^12.2.0",
+    "dotenv": "^8.2.0",
     "express": "4.17.1",
     "express-handlebars": "^4.0.4",
-    "mongoose": "5.9.18",
+    "mongoose": "^5.9.18",
     "request": "^2.88.0",
-    "stripe": "8.63.0"
+    "stripe": "^8.x"
   },
   "devDependencies": {
     "@types/dotenv": "6.1.1",

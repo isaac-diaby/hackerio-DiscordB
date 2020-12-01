@@ -4,7 +4,7 @@ import { UserMD, IUserState } from "../../Models/userState";
 import Stripe from "stripe";
 import { SubscriptionMD } from "../../Models/subscriptionState";
 const stripe = new Stripe(process.env.STRIPE_STOKEN, {
-  apiVersion: "2020-03-02"
+  apiVersion: "2020-08-27"
 });
 const port = process.env.PORT || 3000
 const domain = (process.env.PRODUCTION == "True") ? "https://hacker-io-discord.herokuapp.com" : `http://localhost:${port}`
@@ -96,8 +96,8 @@ export class EliteCommand extends DiscordCommand {
       //  Check if already payed
       let subscriptionData = await SubscriptionMD.findOne({
         custumerID
-      })
-      if (!subscriptionData?.subscriptionID) {
+      }).catch(err => this.sendMsgViaDm(`ERROR: ${err.raw.message}. Please Contact a developer in the support server. http://bit.ly/CGBofficialServer`, this.msg.author, false));
+      if (subscriptionData == null || !(subscriptionData.subscriptionID)) {
 
         if (custumerID == undefined) {
           // Create a new customer 
@@ -107,7 +107,7 @@ export class EliteCommand extends DiscordCommand {
             newCustomer => {
               return UserMD.findOneAndUpdate({ userID }, { custumerID: newCustomer.id }).exec().then(() => newCustomer.id)
             }
-          )
+          ).catch(err => this.sendMsgViaDm(`ERROR: ${err.raw.message}. Please Contact a developer in the support server. http://bit.ly/CGBofficialServer`, this.msg.author, false));
         }
         if (!subscriptionData) {
           subscriptionData = await new SubscriptionMD({
@@ -194,7 +194,7 @@ export class EliteCommand extends DiscordCommand {
     // @ts-ignore
     if (userData.playerStat.eliteExpireDate <= Date.now().valueOf()) {
       // membership expired
-      isUserInOfficialServer?.roles
+      isUserInOfficialServer.roles
         .remove("605180133535645745", "Membership has expired")
         .catch(e =>
           console.log(

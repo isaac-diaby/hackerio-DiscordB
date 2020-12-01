@@ -4,7 +4,7 @@ import { Stripe } from "stripe";
 import { SubscriptionMD } from "./Models/subscriptionState";
 import path from "path"
 const stripe = new Stripe(process.env.STRIPE_STOKEN, {
-  apiVersion: "2020-03-02"
+  apiVersion: "2020-08-27"
 });
 
 export class ServerRun {
@@ -89,7 +89,7 @@ export class ServerRun {
   }
 }
 
-// require('dotenv').config()
+require('dotenv').config()
 import { Database } from "./Database";
 
 

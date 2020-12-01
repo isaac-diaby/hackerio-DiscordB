@@ -85,9 +85,10 @@ export class UserStatsCommand extends DiscordCommand {
     userID: string;
     status: boolean;
   }) {
+    // @ts-ignore
     UserMD.findOneAndUpdate({ userID }, { $set: { online: status } })
       .exec()
-      .catch(e => console.log(e));
+      .catch((e: any) => console.log(e));
   }
 
   static async checkIfUserLeveledUp(
