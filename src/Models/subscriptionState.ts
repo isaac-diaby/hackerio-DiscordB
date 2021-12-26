@@ -1,6 +1,6 @@
 import { Schema, model, Document, Model } from "mongoose";
 
-const SubscriptionSchema = new Schema({
+const SubscriptionSchema = new Schema<ISubscriptionData>({
   custumerID: { type: String, required: true, index: true },
   sessionID: { type: String, unique: true },
   subscriptionID: { type: String, unique: true },
@@ -13,9 +13,9 @@ export interface ISubscriptionData {
   createdDate: Date;
 }
 
-interface ISubscriptionDataDoc extends Document, ISubscriptionData {}
+// interface ISubscriptionDataDoc extends Document<ISubscriptionData> {}
 
-export const SubscriptionMD: Model<ISubscriptionDataDoc> = model(
+export const SubscriptionMD: Model<ISubscriptionData> = model(
   "Subscription",
   SubscriptionSchema,
   "Subscriptions"

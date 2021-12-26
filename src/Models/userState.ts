@@ -1,6 +1,6 @@
 import { Schema, model, Model, Document } from "mongoose";
 
-const logSchema = new Schema(
+const logSchema = new Schema<Ilog>(
   {
     type: { type: String, required: true },
     time: { type: Date, required: true },
@@ -42,7 +42,7 @@ export function uuidv4() {
   });
 }
 
-const userSchema = new Schema({
+const userSchema = new Schema<IUserState>({
   userID: {
     type: String,
     unique: true,
@@ -113,7 +113,7 @@ export interface IUserState {
     joinedDate: Date;
   };
 }
-export interface IUserStateDoc extends IUserState, Document {}
+// export interface IUserStateDoc extends Document<IUserState> {}
 
 // all instances will have acces to this when doing UserMD.findOne().byUserID('usersID')
 userSchema.static('byUserID', function(userID: string, cb: void) {
@@ -121,4 +121,4 @@ userSchema.static('byUserID', function(userID: string, cb: void) {
   return this.findOne({ userID }, cb);
 })
 
-export const UserMD: Model<IUserStateDoc> = model("User", userSchema, "Users");
+export const UserMD: Model<IUserState> = model("User", userSchema, "Users");

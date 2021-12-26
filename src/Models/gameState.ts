@@ -24,7 +24,7 @@ const GameMetaDataSchema = new Schema(
   }
   // ,{ _id: false }
 );
-const GameSchema = new Schema({
+const GameSchema = new Schema<IGameData>({
   meta: GameMetaDataSchema,
   onGoing: { type: Boolean, default: true },
   startedAt: { type: Date, default: Date.now },
@@ -55,11 +55,11 @@ export interface IGameData {
   onGoing: Boolean;
   startedAt: Date;
 }
-interface IGameDataDoc extends Document, IGameData {}
+// interface IGameDataDoc extends Document<IGameData> {}
 
 GameSchema.static('byGameID', function(gameID: string, cb: void) {
   //@ts-ignore
   return this.findOne({ "meta.gameID": gameID }, cb);
 })
 
-export const GameMD: Model<IGameDataDoc> = model("Game", GameSchema, "Games");
+export const GameMD: Model<IGameData> = model("Game", GameSchema, "Games");
