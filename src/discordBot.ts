@@ -35,11 +35,6 @@ export class DiscordBotRun {
     })()
   ]);
   //
-  apiKeys = {
-    "botlist.space": process.env.SC_DBSPACE, // Online
-    "yabl.xyz": process.env.SC_YABL, // Online
-    "discordbotlist.com": process.env.SC_DBL // Online
-  };
 
   constructor() {
     this.botClient = new Discord.Client();
@@ -47,8 +42,7 @@ export class DiscordBotRun {
     this.botClient.on("ready", () => {
       if (process.env.PRODUCTION == "True")
         this.botClient.user.setActivity(
-          `Hackers |  ${process.env.BOT_PREFIX}register | v${
-            process.env.BOT_VERSION
+          `Hackers |  ${process.env.BOT_PREFIX}register | v${process.env.BOT_VERSION
           }`,
           { type: "WATCHING" }
         );
@@ -56,7 +50,12 @@ export class DiscordBotRun {
       // send server count to botlisting sites
       // blapi.setLogging(true);
       try {
-        blapi.handle(this.botClient, this.apiKeys, 15);
+        let apiKeys = {
+          "botlist.space": process.env.SC_DBSPACE, // Online
+          "yabl.xyz": process.env.SC_YABL, // Online
+          "discordbotlist.com": process.env.SC_DBL // Online
+        };
+        blapi.handle(this.botClient, apiKeys, 15);
       } catch (err) {
         console.error("FAILED to push bot stats", "handle() undefined in DiscordBot.ts");
       }
@@ -104,7 +103,7 @@ export class DiscordBotRun {
       }
       // check if users info is A in the DB else create it
       UserMD.findOne({ userID: receivedMessage.author.id })
-        .then(async (userData: IUserState) => {
+        .then((userData) => {
           if (!userData) {
             if (
               receivedMessage.content === `${process.env.BOT_PREFIX}register`
@@ -177,7 +176,7 @@ export class DiscordBotRun {
             );
           }
         })
-        .catch(e => console.log(e));
+        .catch((e: any) => console.log(e));
     });
   }
 

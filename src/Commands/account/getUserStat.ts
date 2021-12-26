@@ -13,7 +13,7 @@ export class UserStatsCommand extends DiscordCommand {
     super(client, message, cmdArguments);
 
     UserMD.findOne({ userID: message.author.id })
-      .then((userData: IUserState) => {
+      .then((userData) => {
         let Msg = new Discord.MessageEmbed();
         if (userData) {
           const currentLevelData = [...DiscordBotRun.LevelSystemXp].filter(

@@ -112,7 +112,7 @@ export class EliteCommand extends DiscordCommand {
       //  Check if already payed
       let subscriptionData = await SubscriptionMD.findOne({
         custumerID
-      }).catch(err => this.sendMsgViaDm(`ERROR: ${err.raw.message}. Please Contact a developer in the support server. http://bit.ly/CGBofficialServer`, this.msg.author, false));
+      }).catch(err => this.sendMsgViaDm(`ERROR: Please Contact a developer in the support server. http://bit.ly/CGBofficialServer`, this.msg.author, false));
       if (subscriptionData == null || !(subscriptionData.subscriptionID)) {
 
         if (custumerID == undefined) {
@@ -123,12 +123,18 @@ export class EliteCommand extends DiscordCommand {
             newCustomer => {
               return UserMD.findOneAndUpdate({ userID }, { custumerID: newCustomer.id }).exec().then(() => newCustomer.id)
             }
-          ).catch(err => this.sendMsgViaDm(`ERROR: ${err.raw.message}. Please Contact a developer in the support server. http://bit.ly/CGBofficialServer`, this.msg.author, false));
+          ).catch(err => {
+            console.log(err.raw.message)
+            this.sendMsgViaDm(`ERROR: Please Contact a developer in the support server. http://bit.ly/CGBofficialServer`, this.msg.author, false)
+            return undefined;
+          });
         }
-        if (!subscriptionData) {
+        if (!subscriptionData || custumerID != undefined ) {
           subscriptionData = await new SubscriptionMD({
             custumerID
           }).save();
+        }else {
+          return;
         }
         stripe.checkout.sessions
           .create(
@@ -167,7 +173,7 @@ export class EliteCommand extends DiscordCommand {
           })
           .catch((err: { raw: { message: any } }) =>
             this.sendMsgViaDm(
-              `ERROR: ${err.raw.message}. Please Contact a developer in the support server. http://bit.ly/CGBofficialServer`,
+              `ERROR: Please Contact a developer in the support server. http://bit.ly/CGBofficialServer`,
               this.msg.author,
               false
             )
